@@ -75,15 +75,18 @@ const buscarReclamo = async (req, res) => {
     if (cuit) whereClause.cuit = cuit;
 
     // Busca los reclamos que coincidan con los criterios
-    const resultados = await Reclamos.findAll({ where: whereClause });
+    const resultados = await Reclamos.findAll({
+      where: whereClause,
+      include: {
+        model: Derivacion,
+        required: false, // Esto permite traer los reclamos aunque no tengan derivaciones
+      },
+    });
 
     if (resultados.length === 0) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "No se encontraron reclamos con los criterios proporcionados.",
-        });
+      return res.status(404).json({
+        message: "No se encontraron reclamos con los criterios proporcionados.",
+      });
     }
 
     return res.status(200).json(resultados);
