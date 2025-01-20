@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
+import MisTickets from "./MisTickets";
+import FormTickets from "./FormTickets";
 
 export default function Home() {
-  // Función para cerrar sesión (limpiar el localStorage)
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.reload(); // Recarga la página para aplicar los cambios
+    window.location.reload();
   };
+
+  const [showTickets, setShowTickets] = useState(false);
 
   return (
     <div className="Home">
@@ -16,9 +19,19 @@ export default function Home() {
           Cerrar Sesión
         </button>
       </div>
+      <div className="buttonMyTickets">
+        <button onClick={() => setShowTickets(!showTickets)}>
+          {showTickets ? "Ocultar Tickets" : "Mostrar Tickets"}
+        </button>
+      </div>
 
+      {showTickets && (
+        <div className="ticketsPage">
+          <MisTickets />
+        </div>
+      )}
       <div className="content">
-        <span>Holis</span>
+        <FormTickets />
       </div>
     </div>
   );
