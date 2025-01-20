@@ -185,9 +185,9 @@ button:focus-visible {
 }
 
 .buttonMyTickets {
-  display: flex;
-  justify-content: flex-start;
-  margin-left: 0;
+  position: absolute;
+  top: 80px;
+  left: 20px;
 }
 
 .buttonMyTickets button {
@@ -259,6 +259,7 @@ button:focus-visible {
 .clientFormContainer {
   max-width: 800px;
   margin: 50px auto;
+
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
@@ -268,10 +269,17 @@ button:focus-visible {
 }
 
 h2 {
-  text-align: center;
-  color: #444;
+  text-align: left;
+  color: #222;
   margin-bottom: 20px;
+  font-size: 16px; 
+  font-weight: bold; 
+  letter-spacing: 1px; 
+  text-transform: uppercase; 
+  border-left: 5px solid #ffcc00; 
+  padding-left: 10px; 
 }
+
 
 .clientForm {
   display: flex;

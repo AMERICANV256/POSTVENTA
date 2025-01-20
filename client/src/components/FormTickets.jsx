@@ -25,7 +25,8 @@ export default function FormTickets() {
 
   return (
     <div className="clientFormContainer">
-      <h2>Ingresar reclamo</h2>
+      <h2>Ingresar Reclamo</h2>
+      <hr />
       <form className="clientForm" onSubmit={handleSubmit}>
         <div className="formGrid">
           <label>
