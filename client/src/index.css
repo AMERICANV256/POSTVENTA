@@ -155,7 +155,9 @@ button:focus-visible {
   background-color: #e6b800; 
 }
 
-
+.obligatorio {
+  color: red;
+}
 
 
 .Login a {
