@@ -13,20 +13,8 @@ export default function Login({ handleCerrarModalLogin }) {
 
   // const navigate = useNavigate();
 
-  const handleMostrarModalRegistro = () => {
-    setRegistro(true);
-  };
-
   const handleCerrarModalRegistro = () => {
     setRegistro(false);
-  };
-
-  const handleMostrarModalRecover = () => {
-    setRecover(true);
-  };
-
-  const handleCerrarModalRecover = () => {
-    setRecover(false);
   };
 
   const loginUser = async (e) => {
@@ -62,7 +50,6 @@ export default function Login({ handleCerrarModalLogin }) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(loggedUser));
         setSaved("login");
-        navigate("/admin");
         window.location.reload();
         // setShowWelcomeMessage(true);
       } else {
@@ -103,12 +90,6 @@ export default function Login({ handleCerrarModalLogin }) {
               />
             </div>
 
-            {saved === "error" && (
-              <div className="errorLogin">
-                <span className="mainError">Error al Ingresar</span>
-                <strong className="detailedError">{errorMessage}</strong>
-              </div>
-            )}
             <div className="buttonIngresarLogin">
               <input
                 type="submit"

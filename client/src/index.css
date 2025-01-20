@@ -176,6 +176,56 @@ button:focus-visible {
   align-items: center;
 }
 
+.Home {
+  font-family: "Arial", sans-serif; 
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  color: white;
+  padding: 15px 30px;
+  font-weight: 600; 
+  font-size: 1.2rem;
+}
+
+
+.serviceTitle {
+  font-size: 1.5rem;
+}
+
+
+.logoutButton {
+  background-color: #ffcc00;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  color: black;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.logoutButton:hover {
+  background-color: #e6b800; 
+}
+
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
 
 
 
