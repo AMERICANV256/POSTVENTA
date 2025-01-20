@@ -335,6 +335,15 @@ h2 {
   background-color: #e6b800;
 }
 
+.registro {
+  max-height: 400px; /* Altura máxima del contenedor */
+  overflow-y: auto; /* Activa el scroll vertical */
+  padding: 10px; /* Espaciado interno para los inputs */
+  border: 1px solid #ccc; /* Opcional: agrega un borde para delimitar */
+  border-radius: 5px; /* Bordes redondeados */
+  background-color: #f9f9f9; /* Fondo claro */
+}
+
 
 
 

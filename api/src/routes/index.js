@@ -21,6 +21,8 @@ const {
   getUsuariosChart,
 } = require("../controllers/Usuarios");
 
+const { createReclamo, buscarReclamo } = require("../controllers/Reclamos");
+
 const check = require("../middlewares/auth");
 
 router.post("/usuarios/login", login);
@@ -32,5 +34,7 @@ router.get("/usuarios/chart", check.auth, getUsuariosChart);
 router.get("/usuarios/detail/:idUsuario", check.auth, obtenerDetalleUsuario);
 router.get("/usuarios/all", check.auth, getAllUsers);
 router.put("/usuarios/recoverpass", resetPassword);
+router.post("/reclamos/create", createReclamo);
+router.post("/reclamos/buscar", buscarReclamo);
 
 module.exports = router;

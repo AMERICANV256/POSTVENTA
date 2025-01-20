@@ -70,6 +70,9 @@ export default function Login({ handleCerrarModalLogin }) {
     <div>
       {!registro && (
         <div className="login-container">
+          {/* <div className="registro">
+            <Registro handleCerrarModalRegistro={handleCerrarModalRegistro} />
+          </div> */}
           <form className="login-form" onSubmit={loginUser}>
             <div className="form-group">
               <label htmlFor="email" style={{ fontWeight: "bold" }}>
@@ -97,12 +100,6 @@ export default function Login({ handleCerrarModalLogin }) {
               />
             </div>
           </form>
-        </div>
-      )}
-
-      {registro && (
-        <div>
-          <Registro handleCerrarModalRegistro={handleCerrarModalRegistro} />
         </div>
       )}
     </div>
