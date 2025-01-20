@@ -40,48 +40,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
-const { Usuarios, Alumnos, Entrenadores, Sesiones, Actividades, ValoresPSE } =
-  sequelize.models;
-
-// Usuarios -> Sesiones
-Usuarios.hasMany(Sesiones, { foreignKey: "usuario_id" });
-Sesiones.belongsTo(Usuarios, { foreignKey: "usuario_id" });
-
-// Sesiones -> ValoresPSE
-Sesiones.hasMany(ValoresPSE, { foreignKey: "sesion_id" });
-ValoresPSE.belongsTo(Sesiones, { foreignKey: "sesion_id" });
-
-// Actividades -> Sesiones
-Actividades.hasMany(Sesiones, { foreignKey: "actividad_id" });
-Sesiones.belongsTo(Actividades, { foreignKey: "actividad_id" });
-
-// Usuarios -> Entrenadores
-Usuarios.hasMany(Entrenadores, { foreignKey: "usuario_id" });
-Entrenadores.belongsTo(Usuarios, { foreignKey: "usuario_id" });
-
-// Alumnos -> Entrenadores (Muchos a Muchos)
-Alumnos.belongsToMany(Entrenadores, {
-  through: "AlumnoEntrenador",
-  foreignKey: "alumno_id",
-  otherKey: "entrenador_id",
-});
-Entrenadores.belongsToMany(Alumnos, {
-  through: "AlumnoEntrenador",
-  foreignKey: "entrenador_id",
-  otherKey: "alumno_id",
-});
-
-// Alumnos -> Sesiones (Muchos a Muchos)
-Alumnos.belongsToMany(Sesiones, {
-  through: "AlumnoSesion",
-  foreignKey: "alumno_id",
-  otherKey: "sesion_id",
-});
-Sesiones.belongsToMany(Alumnos, {
-  through: "AlumnoSesion",
-  foreignKey: "sesion_id",
-  otherKey: "alumno_id",
-});
+const { Usuarios } = sequelize.models;
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

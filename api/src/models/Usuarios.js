@@ -45,39 +45,7 @@ module.exports = (sequelize) => {
         type: DataTypes.BOOLEAN,
         defaultValue: null,
       },
-      activo: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true,
-        allowNull: false,
-      },
-      firma: {
-        type: DataTypes.TEXT,
-        defaultValue: null,
-      },
-      suscripcion: {
-        type: DataTypes.STRING,
-        defaultValue: "basic",
-      },
-      fechaInicioSuscripcion: {
-        type: DataTypes.DATE,
-        defaultValue: null,
-      },
-      fechaFinSuscripcion: {
-        type: DataTypes.DATE,
-        defaultValue: null,
-      },
-      pagoActivo: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-      metodoPago: {
-        type: DataTypes.STRING,
-        defaultValue: null,
-      },
-      moneda: {
-        type: DataTypes.STRING,
-        defaultValue: "USD",
-      },
+
       pais: {
         type: DataTypes.STRING,
         defaultValue: null,
