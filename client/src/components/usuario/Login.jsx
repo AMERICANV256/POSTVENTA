@@ -88,7 +88,7 @@ export default function Login({ handleCerrarModalLogin }) {
                 required
               />
             </div>
-
+            <br />
             <div className="buttonIngresarLogin">
               <input
                 type="submit"

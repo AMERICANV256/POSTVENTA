@@ -142,18 +142,21 @@ button:focus-visible {
 .Login input[type="submit"] {
   width: 100%;
   padding: 10px;
-  background: #aad1e6; 
-  color: #fff;
+  background-color: #ffcc00; 
+  color: black; 
   font-weight: bold;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease; 
 }
 
 .Login input[type="submit"]:hover {
-  background: #86bbd8; 
+  background-color: #e6b800; 
 }
+
+
+
 
 .Login a {
   color: #555;
