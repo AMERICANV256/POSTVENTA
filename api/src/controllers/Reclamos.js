@@ -1,4 +1,4 @@
-const { Reclamos, Derivacion } = require("../db.js");
+const { Reclamos, Derivacion, ClientesReclamantes } = require("../db.js");
 
 const createReclamo = async (req, res) => {
   try {
@@ -16,6 +16,7 @@ const createReclamo = async (req, res) => {
       pdf,
     } = req.body;
 
+    // Validación de parámetros
     if (
       !nombre ||
       !apellido ||
@@ -29,22 +30,27 @@ const createReclamo = async (req, res) => {
       throw "Faltan parámetros en el cuerpo de la solicitud";
     }
 
-    // Crea un nuevo reclamo en la base de datos
-    const nuevoReclamo = await Reclamos.create({
+    // 1. Crear el cliente en la tabla ClientesReclamantes
+    const nuevoCliente = await ClientesReclamantes.create({
       nombre,
       apellido,
-      email,
-      telefono,
-      direccion,
-      motivo,
-      razonSocial,
       documento,
+      razonSocial,
       cuit,
+      telefono,
+      email,
+      direccion,
+    });
+
+    // 2. Crear el reclamo en la tabla Reclamos con la referencia al cliente creado
+    const nuevoReclamo = await Reclamos.create({
+      clienteReclamanteId: nuevoCliente.id, // Relacionamos el reclamo con el cliente
+      motivo,
       derivado,
       pdf,
     });
 
-    // Si el reclamo está derivado (1 o 2), crea la derivación correspondiente
+    // 3. Si el reclamo está derivado (1 o 2), crea la derivación correspondiente
     if (derivado === 1 || derivado === 2) {
       const tipoDerivacion = derivado === 1 ? "Postventa" : "Gerencia";
 
@@ -56,7 +62,7 @@ const createReclamo = async (req, res) => {
       });
     }
 
-    // Devuelve el reclamo creado
+    // 4. Devuelve el reclamo creado
     return res.status(201).json(nuevoReclamo);
   } catch (error) {
     console.error(error);
@@ -77,7 +83,7 @@ const buscarReclamo = async (req, res) => {
     if (cuit) whereClause.cuit = cuit;
 
     // Busca los reclamos que coincidan con los criterios
-    const resultados = await Reclamos.findAll({
+    const resultados = await ClientesReclamantes.findAll({
       where: whereClause,
       include: {
         model: Derivacion,

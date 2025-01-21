@@ -9,57 +9,6 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      nombre: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      apellido: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      documento: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      razonSocial: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      cuit: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      telefono: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: true,
-        },
-      },
-      email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: false,
-        validate: {
-          notEmpty: true,
-          isEmail: true,
-        },
-      },
       motivo: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -74,6 +23,14 @@ module.exports = (sequelize) => {
       pdf: {
         type: TEXT,
         allowNull: true,
+      },
+      clienteReclamanteId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "ClientesReclamantes",
+          key: "id",
+        },
+        allowNull: false,
       },
     },
     {
