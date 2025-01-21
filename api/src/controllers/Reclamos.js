@@ -13,6 +13,7 @@ const createReclamo = async (req, res) => {
       motivo,
       cuit,
       derivado,
+      pdf,
     } = req.body;
 
     if (
@@ -40,6 +41,7 @@ const createReclamo = async (req, res) => {
       documento,
       cuit,
       derivado,
+      pdf,
     });
 
     // Si el reclamo está derivado (1 o 2), crea la derivación correspondiente
@@ -47,9 +49,9 @@ const createReclamo = async (req, res) => {
       const tipoDerivacion = derivado === 1 ? "Postventa" : "Gerencia";
 
       await Derivacion.create({
-        reclamoId: nuevoReclamo.id, // Relación con el reclamo creado
+        reclamoId: nuevoReclamo.id,
         derivacion: tipoDerivacion,
-        fechaDerivacion: new Date(), // Fecha actual
+        fechaDerivacion: new Date(),
         tipo: derivado,
       });
     }
@@ -79,7 +81,7 @@ const buscarReclamo = async (req, res) => {
       where: whereClause,
       include: {
         model: Derivacion,
-        required: false, // Esto permite traer los reclamos aunque no tengan derivaciones
+        required: false,
       },
     });
 

@@ -1,6 +1,10 @@
 import React, { useState } from "react";
+import Select from "react-select";
+import { useReclamo } from "../hooks/useReclamos";
 
 export default function FormTickets() {
+  const { mutate: formReclamo, isLoading } = useReclamo().reclamoMutation;
+
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -9,8 +13,37 @@ export default function FormTickets() {
     cuit: "",
     telefono: "",
     email: "",
-    motivoContacto: "",
+    motivo: "",
+    derivado: null,
+    pdf: null,
   });
+
+  const reclamos = [
+    {
+      value: 1,
+      label: "Post Venta",
+    },
+    {
+      value: 2,
+      label: "Gerencia",
+    },
+  ];
+
+  const reclamosoptions = reclamos.map((reclamo) => ({
+    value: reclamo.value,
+    label: reclamo.label,
+  }));
+
+  const handleSelectChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      derivado: selectedOption ? selectedOption.value : null,
+    });
+  };
+
+  const selectedLabel = reclamos.find(
+    (reclamo) => reclamo.value === formData.derivado
+  )?.label;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,8 +52,7 @@ export default function FormTickets() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Datos del cliente:", formData);
-    alert("Datos guardados en el estado");
+    formReclamo(formData);
   };
 
   return (
@@ -30,7 +62,7 @@ export default function FormTickets() {
       <form className="clientForm" onSubmit={handleSubmit}>
         <div className="formGrid">
           <label>
-            Nombre:
+            Nombre: <span className="obligatorio">*</span>
             <input
               type="text"
               name="nombre"
@@ -40,7 +72,7 @@ export default function FormTickets() {
             />
           </label>
           <label>
-            Apellido:
+            Apellido:<span className="obligatorio">*</span>
             <input
               type="text"
               name="apellido"
@@ -50,7 +82,7 @@ export default function FormTickets() {
             />
           </label>
           <label>
-            Razón Social:
+            Razón Social:<span className="obligatorio">*</span>
             <input
               type="text"
               name="razonSocial"
@@ -59,7 +91,7 @@ export default function FormTickets() {
             />
           </label>
           <label>
-            Documento:
+            Documento:<span className="obligatorio">*</span>
             <input
               type="text"
               name="documento"
@@ -69,7 +101,7 @@ export default function FormTickets() {
             />
           </label>
           <label>
-            CUIT:
+            CUIT:<span className="obligatorio">*</span>
             <input
               type="text"
               name="cuit"
@@ -78,7 +110,7 @@ export default function FormTickets() {
             />
           </label>
           <label>
-            Teléfono:
+            Teléfono:<span className="obligatorio">*</span>
             <input
               type="text"
               name="telefono"
@@ -87,7 +119,7 @@ export default function FormTickets() {
             />
           </label>
           <label>
-            Email:
+            Email:<span className="obligatorio">*</span>
             <input
               type="email"
               name="email"
@@ -96,17 +128,33 @@ export default function FormTickets() {
               required
             />
           </label>
+          <label>
+            Derivar:
+            <Select
+              name="derivado"
+              value={reclamosoptions.find(
+                (option) => option.value === formData.derivado
+              )}
+              onChange={handleSelectChange}
+              options={reclamosoptions}
+              placeholder={selectedLabel || "Seleccionar"}
+              className="react-select"
+              isClearable
+            />
+          </label>
         </div>
         <label className="fullWidth">
-          Motivos de contacto:
+          Motivo de contacto: <span className="obligatorio">*</span>
           <textarea
-            name="motivoContacto"
-            value={formData.motivoContacto}
+            name="motivo"
+            value={formData.motivo}
             onChange={handleChange}
             rows="4"
           ></textarea>
         </label>
-        <button type="submit">Enviar</button>
+        <div className="create-button-reclamo">
+          <button type="submit">Enviar</button>
+        </div>
       </form>
     </div>
   );

@@ -21,18 +21,21 @@ export default function Home() {
       </div>
       <div className="buttonMyTickets">
         <button onClick={() => setShowTickets(!showTickets)}>
-          {showTickets ? "Ocultar Tickets" : "Mostrar Tickets"}
+          {showTickets ? "Ocultar Reclamos" : "Buscar Reclamos"}
         </button>
       </div>
 
       {showTickets && (
         <div className="ticketsPage">
-          <MisTickets />
+          <MisTickets setShowTickets={setShowTickets} />
         </div>
       )}
-      <div className="content">
-        <FormTickets />
-      </div>
+
+      {!showTickets && (
+        <div className="content">
+          <FormTickets />
+        </div>
+      )}
     </div>
   );
 }

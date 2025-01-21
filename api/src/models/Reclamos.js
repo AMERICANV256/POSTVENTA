@@ -1,4 +1,4 @@
-const { DataTypes, INTEGER } = require("sequelize");
+const { DataTypes, INTEGER, TEXT } = require("sequelize");
 
 module.exports = (sequelize) => {
   sequelize.define(
@@ -69,6 +69,10 @@ module.exports = (sequelize) => {
       },
       derivado: {
         type: INTEGER,
+        allowNull: true,
+      },
+      pdf: {
+        type: TEXT,
         allowNull: true,
       },
     },

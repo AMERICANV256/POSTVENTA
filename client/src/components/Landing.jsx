@@ -19,7 +19,7 @@ export default function Landing() {
     } else {
       setIsAuthenticated(false);
     }
-  }, [auth, setAuth]);
+  }, []);
 
   return isAuthenticated ? (
     <Home />
