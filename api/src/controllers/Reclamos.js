@@ -1,4 +1,4 @@
-const { Reclamos, Derivacion } = require("../db.js");
+const { Reclamos, Derivacion, ClientesReclamantes } = require("../db.js");
 
 const createReclamo = async (req, res) => {
   try {
@@ -16,6 +16,7 @@ const createReclamo = async (req, res) => {
       pdf,
     } = req.body;
 
+    // Validación de parámetros
     if (
       !nombre ||
       !apellido ||
@@ -29,22 +30,32 @@ const createReclamo = async (req, res) => {
       throw "Faltan parámetros en el cuerpo de la solicitud";
     }
 
-    // Crea un nuevo reclamo en la base de datos
+    // 1. Verificar si el cliente ya existe por el cuit
+    let cliente = await ClientesReclamantes.findOne({ where: { cuit } });
+
+    // 2. Si no existe, crearlo
+    if (!cliente) {
+      cliente = await ClientesReclamantes.create({
+        nombre,
+        apellido,
+        documento,
+        razonSocial,
+        cuit,
+        telefono,
+        email,
+        direccion,
+      });
+    }
+
+    // 3. Crear el reclamo en la tabla Reclamos con la referencia al cliente encontrado o creado
     const nuevoReclamo = await Reclamos.create({
-      nombre,
-      apellido,
-      email,
-      telefono,
-      direccion,
+      clienteReclamanteId: cliente.id, // Relacionamos el reclamo con el cliente
       motivo,
-      razonSocial,
-      documento,
-      cuit,
       derivado,
       pdf,
     });
 
-    // Si el reclamo está derivado (1 o 2), crea la derivación correspondiente
+    // 4. Si el reclamo está derivado (1 o 2), crea la derivación correspondiente
     if (derivado === 1 || derivado === 2) {
       const tipoDerivacion = derivado === 1 ? "Postventa" : "Gerencia";
 
@@ -56,7 +67,7 @@ const createReclamo = async (req, res) => {
       });
     }
 
-    // Devuelve el reclamo creado
+    // 5. Devuelve el reclamo creado
     return res.status(201).json(nuevoReclamo);
   } catch (error) {
     console.error(error);
@@ -68,29 +79,40 @@ const buscarReclamo = async (req, res) => {
   try {
     const { email, cuit } = req.body;
 
+    // Validar que al menos uno de los campos esté presente
     if (!email && !cuit) {
       throw "Debe proporcionar al menos un email o un cuit para buscar.";
     }
 
+    // Construir la cláusula where dinámicamente
     const whereClause = {};
     if (email) whereClause.email = email;
     if (cuit) whereClause.cuit = cuit;
 
-    // Busca los reclamos que coincidan con los criterios
-    const resultados = await Reclamos.findAll({
+    // Buscar cliente reclamante, sus reclamos y las derivaciones asociadas
+    const resultados = await ClientesReclamantes.findOne({
       where: whereClause,
-      include: {
-        model: Derivacion,
-        required: false,
-      },
+      include: [
+        {
+          model: Reclamos, // Incluir todos los reclamos asociados al cliente
+          include: [
+            {
+              model: Derivacion, // Incluir todas las derivaciones asociadas a cada reclamo
+              required: false, // Permitir reclamos sin derivaciones
+            },
+          ],
+        },
+      ],
     });
 
-    if (resultados.length === 0) {
+    // Si no hay resultados, devolver un mensaje adecuado
+    if (!resultados) {
       return res.status(404).json({
         message: "No se encontraron reclamos con los criterios proporcionados.",
       });
     }
 
+    // Devolver los resultados encontrados
     return res.status(200).json(resultados);
   } catch (error) {
     console.error(error);

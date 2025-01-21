@@ -64,6 +64,7 @@ export default function MisTickets({ setShowTickets }) {
           Buscar
         </button>
       </form>
+
       <ModalTickets data={data} setShowTickets={setShowTickets} />
     </div>
   );
