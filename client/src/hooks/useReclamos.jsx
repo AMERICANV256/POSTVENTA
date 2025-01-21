@@ -10,6 +10,10 @@ const postCreateReclamo = async (data) => {
   return await ReclamosAPI.post(`create`, data);
 };
 
+const putderivado = async (data) => {
+  return await ReclamosAPI.post(`edit`, data);
+};
+
 export const useReclamo = () => {
   const reclamoMutation = useMutation({
     mutationKey: ["create-reclamo"],
@@ -139,5 +143,67 @@ export const useReclamo = () => {
     },
   });
 
-  return { reclamoMutation, PostBusquedaReclamo };
+  const editreclamoMutation = useMutation({
+    mutationKey: ["edit-reclamo"],
+    mutationFn: (data) => putderivado(data),
+    onSuccess: () => {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "El reclamo se modificó correctamente!",
+        showConfirmButton: false,
+        timer: 2000,
+      });
+    },
+    onError: (error) => {
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            Swal.fire({
+              position: "center",
+              icon: "warning",
+              title:
+                "Hay errores en el formulario; por favor, intente nuevamente",
+              background: "#ffffff",
+              iconColor: "#ffc107",
+              customClass: {
+                title: "text-dark",
+              },
+              showConfirmButton: false,
+              timer: 5000,
+            });
+            break;
+          default:
+            Swal.fire({
+              position: "center",
+              icon: "warning",
+              title: "Hubo un error",
+              showConfirmButton: false,
+              timer: 2000,
+              background: "#ffffff",
+              iconColor: "#ffc107",
+              customClass: {
+                title: "text-dark",
+              },
+            });
+            break;
+        }
+      } else {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: "Hubo un error al procesar la solicitud",
+          showConfirmButton: false,
+          timer: 2000,
+          background: "#ffffff",
+          iconColor: "#ffc107",
+          customClass: {
+            title: "text-dark",
+          },
+        });
+      }
+    },
+  });
+
+  return { reclamoMutation, PostBusquedaReclamo, editreclamoMutation };
 };

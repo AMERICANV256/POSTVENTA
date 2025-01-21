@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import { useReclamo } from "../hooks/useReclamos";
 
 export default function ModalTickets({ data, setShowTickets }) {
-  const [showModal, setShowModal] = useState(false); // Controla la visibilidad del modal
+  const [showModal, setShowModal] = useState(false);
+
+  const { mutate: editDerivado, isLoading } = useReclamo().editreclamoMutation;
 
   useEffect(() => {
     if (data?.data?.length > 0) {
-      setShowModal(true); // Abre el modal automáticamente si hay datos
+      setShowModal(true);
     }
-  }, [data]); // Escucha cambios en "data"
+  }, [data]);
 
   const handleModalClose = () => {
-    setShowModal(false); // Cierra el modal
-    setShowTickets(false); // Notifica al componente padre si es necesario
+    setShowModal(false);
+    setShowTickets(false);
   };
 
   const formatDate = (date) => {
@@ -133,7 +136,7 @@ export default function ModalTickets({ data, setShowTickets }) {
                               <strong>Última actualización:</strong>{" "}
                               {formatDate(reclamo.updatedAt)}
                             </p>
-                            {/* Mostrar derivaciones si existen */}
+
                             {reclamo.Derivacions?.length > 0 && (
                               <div>
                                 <h5>Derivación</h5>

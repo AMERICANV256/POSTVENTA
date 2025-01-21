@@ -98,7 +98,60 @@ const buscarReclamo = async (req, res) => {
   }
 };
 
+const updateDerivado = async (req, res) => {
+  try {
+    const { id, derivado } = req.body; // Solo necesitamos el id y derivado del cuerpo
+
+    // Buscar el reclamo por ID
+    const reclamo = await Reclamos.findByPk(id);
+
+    if (!reclamo) {
+      return res.status(404).json({ message: "Reclamo no encontrado" });
+    }
+
+    // Si se pasa el campo derivado, actualizamos la derivación
+    if (derivado === 1 || derivado === 2) {
+      const tipoDerivacion = derivado === 1 ? "Postventa" : "Gerencia";
+
+      // Buscar si existe una derivación asociada al reclamo
+      let derivacion = await Derivacion.findOne({
+        where: { reclamoId: id },
+      });
+
+      if (derivacion) {
+        // Si ya existe una derivación, la actualizamos
+        await derivacion.update({
+          derivacion: tipoDerivacion,
+          fechaDerivacion: new Date(),
+          tipo: derivado,
+        });
+      } else {
+        // Si no existe una derivación, creamos una nueva
+        await Derivacion.create({
+          reclamoId: id,
+          derivacion: tipoDerivacion,
+          fechaDerivacion: new Date(),
+          tipo: derivado,
+        });
+      }
+    } else {
+      return res
+        .status(400)
+        .json({ message: "El valor de 'derivado' no es válido" });
+    }
+
+    // Devolver una respuesta exitosa
+    return res
+      .status(200)
+      .json({ message: "Derivación actualizada correctamente" });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).send(error);
+  }
+};
+
 module.exports = {
   createReclamo,
   buscarReclamo,
+  updateDerivado,
 };

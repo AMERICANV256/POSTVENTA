@@ -21,7 +21,11 @@ const {
   getUsuariosChart,
 } = require("../controllers/Usuarios");
 
-const { createReclamo, buscarReclamo } = require("../controllers/Reclamos");
+const {
+  createReclamo,
+  buscarReclamo,
+  updateDerivado,
+} = require("../controllers/Reclamos");
 
 const check = require("../middlewares/auth");
 
@@ -36,5 +40,6 @@ router.get("/usuarios/all", check.auth, getAllUsers);
 router.put("/usuarios/recoverpass", resetPassword);
 router.post("/reclamos/create", createReclamo);
 router.post("/reclamos/buscar", buscarReclamo);
+router.put("/reclamos/edit", updateDerivado);
 
 module.exports = router;
