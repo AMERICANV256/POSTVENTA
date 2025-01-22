@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { useReclamo } from "../hooks/useReclamos";
 import Select from "react-select";
+import Pdf from "./Pdf";
+import { FaFilePdf } from "react-icons/fa";
 
 export default function ModalTickets({ data, setShowTickets }) {
   const [showModal, setShowModal] = useState(false);
@@ -177,6 +179,17 @@ export default function ModalTickets({ data, setShowTickets }) {
                               isClearable
                             />
                           </label>
+                          <br />
+                          <div>
+                            <FaFilePdf
+                              style={{
+                                color: "#b22222",
+                                fontSize: "24px",
+                                marginRight: "10px",
+                              }}
+                            />
+                            <span>Descargar Ticket</span>
+                          </div>
                         </div>
                       </div>
                     )
