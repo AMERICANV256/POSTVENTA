@@ -27,6 +27,8 @@ const {
   updateDerivado,
 } = require("../controllers/Reclamos");
 
+const { getClienteByCuit } = require("../controllers/ClientesReclamantes");
+
 const check = require("../middlewares/auth");
 
 router.post("/usuarios/login", login);
@@ -41,5 +43,6 @@ router.put("/usuarios/recoverpass", resetPassword);
 router.post("/reclamos/create", createReclamo);
 router.post("/reclamos/buscar", buscarReclamo);
 router.put("/reclamos/edit", updateDerivado);
+router.get("/clientes/:cuit", getClienteByCuit);
 
 module.exports = router;

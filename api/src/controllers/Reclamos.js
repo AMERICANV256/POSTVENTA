@@ -89,30 +89,28 @@ const buscarReclamo = async (req, res) => {
     if (email) whereClause.email = email;
     if (cuit) whereClause.cuit = cuit;
 
-    // Buscar cliente reclamante, sus reclamos y las derivaciones asociadas
     const resultados = await ClientesReclamantes.findOne({
       where: whereClause,
       include: [
         {
-          model: Reclamos, // Incluir todos los reclamos asociados al cliente
+          model: Reclamos,
           include: [
             {
-              model: Derivacion, // Incluir todas las derivaciones asociadas a cada reclamo
-              required: false, // Permitir reclamos sin derivaciones
+              model: Derivacion,
+              required: false,
             },
           ],
+          order: [["id", "DESC"]],
         },
       ],
     });
 
-    // Si no hay resultados, devolver un mensaje adecuado
     if (!resultados) {
       return res.status(404).json({
         message: "No se encontraron reclamos con los criterios proporcionados.",
       });
     }
 
-    // Devolver los resultados encontrados
     return res.status(200).json(resultados);
   } catch (error) {
     console.error(error);
@@ -122,50 +120,55 @@ const buscarReclamo = async (req, res) => {
 
 const updateDerivado = async (req, res) => {
   try {
-    const { id, derivado } = req.body; // Solo necesitamos el id y derivado del cuerpo
+    const updates = req.body; // Ahora esperamos un array de objetos
 
-    // Buscar el reclamo por ID
-    const reclamo = await Reclamos.findByPk(id);
+    // Iterar sobre cada reclamo en el array
+    for (const { id, derivado } of updates) {
+      // Buscar el reclamo por ID
+      const reclamo = await Reclamos.findByPk(id);
 
-    if (!reclamo) {
-      return res.status(404).json({ message: "Reclamo no encontrado" });
-    }
+      if (!reclamo) {
+        return res
+          .status(404)
+          .json({ message: `Reclamo con ID ${id} no encontrado` });
+      }
 
-    // Si se pasa el campo derivado, actualizamos la derivación
-    if (derivado === 1 || derivado === 2) {
-      const tipoDerivacion = derivado === 1 ? "Postventa" : "Gerencia";
+      // Si se pasa el campo derivado, actualizamos la derivación
+      if (derivado === 1 || derivado === 2) {
+        const tipoDerivacion = derivado === 1 ? "Postventa" : "Gerencia";
 
-      // Buscar si existe una derivación asociada al reclamo
-      let derivacion = await Derivacion.findOne({
-        where: { reclamoId: id },
-      });
-
-      if (derivacion) {
-        // Si ya existe una derivación, la actualizamos
-        await derivacion.update({
-          derivacion: tipoDerivacion,
-          fechaDerivacion: new Date(),
-          tipo: derivado,
+        // Buscar si existe una derivación asociada al reclamo
+        let derivacion = await Derivacion.findOne({
+          where: { reclamoId: id },
         });
+
+        if (derivacion) {
+          // Si ya existe una derivación, la actualizamos
+          await derivacion.update({
+            derivacion: tipoDerivacion,
+            fechaDerivacion: new Date(),
+            tipo: derivado,
+          });
+        } else {
+          // Si no existe una derivación, creamos una nueva
+          await Derivacion.create({
+            reclamoId: id,
+            derivacion: tipoDerivacion,
+            fechaDerivacion: new Date(),
+            tipo: derivado,
+          });
+        }
       } else {
-        // Si no existe una derivación, creamos una nueva
-        await Derivacion.create({
-          reclamoId: id,
-          derivacion: tipoDerivacion,
-          fechaDerivacion: new Date(),
-          tipo: derivado,
+        return res.status(400).json({
+          message: `El valor de 'derivado' para el reclamo ${id} no es válido`,
         });
       }
-    } else {
-      return res
-        .status(400)
-        .json({ message: "El valor de 'derivado' no es válido" });
     }
 
     // Devolver una respuesta exitosa
     return res
       .status(200)
-      .json({ message: "Derivación actualizada correctamente" });
+      .json({ message: "Derivaciones actualizadas correctamente" });
   } catch (error) {
     console.error(error);
     return res.status(400).send(error);

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useReclamo } from "../hooks/useReclamos";
+import { useCliente } from "../hooks/useClientesReclamantes";
 
 export default function FormTickets() {
   const { mutate: formReclamo, isLoading } = useReclamo().reclamoMutation;
@@ -17,6 +18,25 @@ export default function FormTickets() {
     derivado: null,
     pdf: null,
   });
+
+  const cuit = formData.cuit;
+
+  const { data: clienteByCuit, isSuccess } =
+    useCliente(cuit).clienteQueryByCuit;
+
+  useEffect(() => {
+    if (isSuccess && clienteByCuit) {
+      setFormData((prevState) => ({
+        ...prevState,
+        nombre: clienteByCuit.nombre || "",
+        apellido: clienteByCuit.apellido || "",
+        razonSocial: clienteByCuit.razonSocial || "",
+        documento: clienteByCuit.documento || "",
+        telefono: clienteByCuit.telefono || "",
+        email: clienteByCuit.email || "",
+      }));
+    }
+  }, [clienteByCuit, isSuccess]);
 
   const reclamos = [
     {
@@ -53,14 +73,35 @@ export default function FormTickets() {
   const handleSubmit = (e) => {
     e.preventDefault();
     formReclamo(formData);
-  };
 
+    setFormData({
+      nombre: "",
+      apellido: "",
+      razonSocial: "",
+      documento: "",
+      cuit: "",
+      telefono: "",
+      email: "",
+      motivo: "",
+      derivado: null,
+      pdf: null,
+    });
+  };
   return (
     <div className="clientFormContainer">
       <h2>Ingresar Reclamo</h2>
       <hr />
       <form className="clientForm" onSubmit={handleSubmit}>
         <div className="formGrid">
+          <label>
+            CUIT:<span className="obligatorio">*</span>
+            <input
+              type="text"
+              name="cuit"
+              value={formData.cuit}
+              onChange={handleChange}
+            />
+          </label>
           <label>
             Nombre: <span className="obligatorio">*</span>
             <input
@@ -100,15 +141,7 @@ export default function FormTickets() {
               required
             />
           </label>
-          <label>
-            CUIT:<span className="obligatorio">*</span>
-            <input
-              type="text"
-              name="cuit"
-              value={formData.cuit}
-              onChange={handleChange}
-            />
-          </label>
+
           <label>
             Teléfono:<span className="obligatorio">*</span>
             <input

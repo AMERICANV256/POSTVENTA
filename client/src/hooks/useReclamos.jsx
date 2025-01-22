@@ -11,7 +11,7 @@ const postCreateReclamo = async (data) => {
 };
 
 const putderivado = async (data) => {
-  return await ReclamosAPI.post(`edit`, data);
+  return await ReclamosAPI.put(`/edit`, data);
 };
 
 export const useReclamo = () => {
