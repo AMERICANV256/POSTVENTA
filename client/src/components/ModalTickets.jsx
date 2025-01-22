@@ -111,8 +111,8 @@ export default function ModalTickets({ data, setShowTickets }) {
                 {/* Sección de Reclamos */}
                 <div className="row">
                   <h5 className="mb-3">Reclamos</h5>
-                  {data.data.Reclamos.sort((a, b) => b.id - a.id) // Ordenar los reclamos por id en orden descendente
-                    .map((reclamo, index) => (
+                  {data.data.Reclamos.sort((a, b) => b.id - a.id).map(
+                    (reclamo, index) => (
                       <div
                         key={reclamo.id}
                         className="col-md-6 mb-4 d-flex align-items-stretch"
@@ -171,7 +171,8 @@ export default function ModalTickets({ data, setShowTickets }) {
                           </label>
                         </div>
                       </div>
-                    ))}
+                    )
+                  )}
                 </div>
               </div>
               <div className="modal-footer">
