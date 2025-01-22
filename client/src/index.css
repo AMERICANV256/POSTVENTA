@@ -449,6 +449,7 @@ h2 span {
 .modal .card-title {
   font-size: 1.2rem;
   font-weight: bold;
+  color: #333333;
 }
 
 .modal .card-body p {
@@ -458,4 +459,15 @@ h2 span {
 .modal .btn-close {
   background-color: #ffcc00;
   border: none;
+}
+
+.titulosReclamosDerivaciones {
+  font-weight: 600;
+  font-size: 28px;
+}
+
+.sombreadoLeve {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }

@@ -84,6 +84,7 @@ export default function ModalTickets({ data, setShowTickets }) {
                         <h5 className="card-title">
                           Datos Personales del Reclamante
                         </h5>
+                        <hr />
                         <p>
                           <strong>Nombre:</strong> {data.data.nombre}{" "}
                           {data.data.apellido}
@@ -110,7 +111,11 @@ export default function ModalTickets({ data, setShowTickets }) {
 
                 {/* Sección de Reclamos */}
                 <div className="row">
-                  <h5 className="mb-3">Reclamos</h5>
+                  <div className="sombreadoLeve">
+                    <h5 className="mb-3 titulosReclamosDerivaciones">
+                      Reclamos
+                    </h5>
+                  </div>
                   {data.data.Reclamos.sort((a, b) => b.id - a.id).map(
                     (reclamo, index) => (
                       <div
@@ -122,6 +127,7 @@ export default function ModalTickets({ data, setShowTickets }) {
                             <h5 className="card-title">
                               Reclamo #{reclamo.id}
                             </h5>
+                            <hr />
                             <p>
                               <strong>Motivo:</strong> {reclamo.motivo}
                             </p>
@@ -133,10 +139,12 @@ export default function ModalTickets({ data, setShowTickets }) {
                               <strong>Última Actualización:</strong>{" "}
                               {formatDate(reclamo.updatedAt)}
                             </p>
-
+                            <hr />
                             {reclamo.Derivacions?.length > 0 && (
                               <div>
-                                <h6>Derivaciones</h6>
+                                <h5 className="titulosReclamosDerivaciones">
+                                  Derivaciones
+                                </h5>
                                 {reclamo.Derivacions.map((derivacion, i) => (
                                   <div key={i}>
                                     <p>
@@ -178,7 +186,13 @@ export default function ModalTickets({ data, setShowTickets }) {
               <div className="modal-footer">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="logoutButton"
+                  style={{
+                    fontSize: "16px",
+                    padding: "10px",
+                    paddingLeft: "25px",
+                    paddingRight: "25px",
+                  }}
                   onClick={handleSave}
                   disabled={isLoading}
                 >
@@ -186,6 +200,8 @@ export default function ModalTickets({ data, setShowTickets }) {
                 </button>
               </div>
             </div>
+            <br />
+            <br />
           </div>
         </div>
       )}
