@@ -25,16 +25,17 @@ const MyDocument = ({ ticket, personalData }) => (
       <View style={styles.section}>
         <Text style={styles.header}>Datos Personales del Reclamante</Text>
         <Text style={styles.label}>
-          <Text style={styles.label}>Nombre: </Text>
-          {personalData.nombre} {personalData.apellido}
+          Nombre:{" "}
+          <Text style={styles.value}>
+            {personalData.nombre} {personalData.apellido}
+          </Text>
         </Text>
         <Text style={styles.label}>
-          <Text style={styles.label}>Razón Social: </Text>
-          {personalData.razonSocial}
+          Razón Social:{" "}
+          <Text style={styles.value}>{personalData.razonSocial}</Text>
         </Text>
         <Text style={styles.label}>
-          <Text style={styles.label}>CUIT: </Text>
-          {personalData.cuit}
+          CUIT: <Text style={styles.value}>{personalData.cuit}</Text>
         </Text>
       </View>
 
