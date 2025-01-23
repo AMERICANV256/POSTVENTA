@@ -27,7 +27,9 @@ const createReclamo = async (req, res) => {
       !email ||
       !motivo
     ) {
-      throw "Faltan parámetros en el cuerpo de la solicitud";
+      const error = new Error("Faltan parámetros en el cuerpo de la solicitud");
+      error.status = 400;
+      throw error;
     }
 
     // 1. Verificar si el cliente ya existe por el cuit
