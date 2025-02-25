@@ -55,6 +55,11 @@ module.exports = (sequelize) => {
           notEmpty: true,
         },
       },
+      telefono2: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
       email: {
         type: DataTypes.STRING,
         allowNull: false,

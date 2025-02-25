@@ -1,4 +1,11 @@
-const { Reclamos, Derivacion, ClientesReclamantes } = require("../db.js");
+const {
+  Reclamos,
+  Derivacion,
+  ClientesReclamantes,
+  Equipo,
+  Marca,
+  Modelo,
+} = require("../db.js");
 
 const createReclamo = async (req, res) => {
   try {
@@ -14,6 +21,11 @@ const createReclamo = async (req, res) => {
       cuit,
       derivado,
       pdf,
+      telefono2,
+      marca, // Aquí recibimos el ID de la marca
+      modelo, // Aquí recibimos el ID del modelo
+      hsUso,
+      falla,
     } = req.body;
 
     // Validación de parámetros
@@ -25,15 +37,15 @@ const createReclamo = async (req, res) => {
       !cuit ||
       !telefono ||
       !email ||
-      !motivo
+      !motivo ||
+      !marca || // Asegurarse de que 'marca' esté presente
+      !modelo // Asegurarse de que 'modelo' esté presente
     ) {
       throw "Faltan parámetros en el cuerpo de la solicitud";
     }
 
-    // 1. Verificar si el cliente ya existe por el cuit
     let cliente = await ClientesReclamantes.findOne({ where: { cuit } });
 
-    // 2. Si no existe, crearlo
     if (!cliente) {
       cliente = await ClientesReclamantes.create({
         nombre,
@@ -44,20 +56,58 @@ const createReclamo = async (req, res) => {
         telefono,
         email,
         direccion,
+        telefono2,
       });
     }
 
-    // 3. Crear el reclamo en la tabla Reclamos con la referencia al cliente encontrado o creado
+    // Buscar la marca por ID, no por nombre
+    let marcaExistente = await Marca.findOne({ where: { id: marca } });
+    if (!marcaExistente) {
+      // Si no existe la marca, se crea una nueva
+      marcaExistente = await Marca.create({
+        id: marca,
+        nombre: "Nombre por defecto",
+      }); // Usa un nombre por defecto si es necesario
+    }
+
+    // Buscar el modelo por ID, no por nombre
+    let modeloExistente = await Modelo.findOne({ where: { id: modelo } });
+    if (!modeloExistente) {
+      // Si no existe el modelo, se crea uno nuevo
+      modeloExistente = await Modelo.create({
+        id: modelo,
+        nombre: "Modelo por defecto",
+      }); // Usa un nombre por defecto si es necesario
+    }
+
+    let equipo = await Equipo.findOne({
+      where: {
+        marcaId: marcaExistente.id,
+        modeloId: modeloExistente.id,
+        hsUso,
+        falla,
+      },
+    });
+
+    if (!equipo) {
+      equipo = await Equipo.create({
+        marcaId: marcaExistente.id,
+        modeloId: modeloExistente.id,
+        hsUso,
+        falla,
+      });
+    }
+
     const nuevoReclamo = await Reclamos.create({
-      clienteReclamanteId: cliente.id, // Relacionamos el reclamo con el cliente
+      clienteReclamanteId: cliente.id,
       motivo,
       derivado,
       pdf,
+      equipoId: equipo.id,
     });
 
-    // 4. Si el reclamo está derivado (1 o 2), crea la derivación correspondiente
     if (derivado === 1 || derivado === 2) {
-      const tipoDerivacion = derivado === 1 ? "Postventa" : "Gerencia";
+      const tipoDerivacion = derivado === 1 ? "Servicios" : "Garantías";
 
       await Derivacion.create({
         reclamoId: nuevoReclamo.id,
@@ -67,7 +117,6 @@ const createReclamo = async (req, res) => {
       });
     }
 
-    // 5. Devuelve el reclamo creado
     return res.status(201).json(nuevoReclamo);
   } catch (error) {
     console.error(error);

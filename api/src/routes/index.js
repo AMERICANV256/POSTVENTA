@@ -27,6 +27,8 @@ const {
   updateDerivado,
 } = require("../controllers/Reclamos");
 
+const { getMarca, getModelo } = require("../controllers/Equipo");
+
 const { getClienteByCuit } = require("../controllers/ClientesReclamantes");
 
 const check = require("../middlewares/auth");
@@ -36,6 +38,8 @@ router.post("/usuarios/registro", registro);
 router.post("/usuarios/rol", check.auth, verificarRol);
 router.put("/usuarios", check.auth, putUser);
 router.get("/usuarios/lastFive", check.auth, getLastLoggedInUsers);
+router.get("/equipos/marcas", getMarca);
+router.get("/equipos/modelos", getModelo);
 router.get("/usuarios/chart", check.auth, getUsuariosChart);
 router.get("/usuarios/detail/:idUsuario", check.auth, obtenerDetalleUsuario);
 router.get("/usuarios/all", check.auth, getAllUsers);

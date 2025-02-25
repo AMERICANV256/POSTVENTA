@@ -1,7 +1,7 @@
-const { DataTypes, INTEGER, TEXT } = require("sequelize");
+const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define(
+  const Reclamos = sequelize.define(
     "Reclamos",
     {
       id: {
@@ -17,11 +17,11 @@ module.exports = (sequelize) => {
         },
       },
       derivado: {
-        type: INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       pdf: {
-        type: TEXT,
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       clienteReclamanteId: {
@@ -32,9 +32,19 @@ module.exports = (sequelize) => {
         },
         allowNull: false,
       },
+      equipoId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "Equipos",
+          key: "id",
+        },
+        allowNull: false,
+      },
     },
     {
       timestamps: true,
     }
   );
+
+  return Reclamos;
 };
