@@ -308,7 +308,7 @@ h2 {
 }
 
 .fullWidth {
-  grid-column: span 2;
+  grid-column: span 1;
 }
 
 .clientForm button {
@@ -470,4 +470,18 @@ h2 span {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.marca-modelo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.marca-modelo-container h2 {
+  margin-bottom: 10px;
+}
+
+.marca-modelo-container .react-select {
+  display: block;
+  margin: 0 auto;
 }

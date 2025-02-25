@@ -22,8 +22,8 @@ export default function FormTickets() {
     motivo: "",
     derivado: null,
     pdf: null,
-    marca: "",
-    modelo: "",
+    marca: null,
+    modelo: null,
     hsUso: "",
     falla: "",
   });
@@ -68,18 +68,24 @@ export default function FormTickets() {
   }));
 
   const handleMarcaChange = (selectedOption) => {
+    const marcaId = selectedOption ? parseInt(selectedOption.value, 10) : null;
+    const nombreMarca = selectedOption ? selectedOption.label : null;
     setSelectedMarca(selectedOption);
     setFormData((prevState) => ({
       ...prevState,
-      marca: selectedOption ? selectedOption.value : "",
+      marca: marcaId,
+      nombreMarca,
     }));
   };
 
   const handleModeloChange = (selectedOption) => {
+    const modeloId = selectedOption ? parseInt(selectedOption.value, 10) : null;
+    const nombreModelo = selectedOption ? selectedOption.label : null;
     setSelectedModelo(selectedOption);
     setFormData((prevState) => ({
       ...prevState,
-      modelo: selectedOption ? selectedOption.value : "",
+      modelo: modeloId,
+      nombreModelo,
     }));
   };
 
@@ -173,8 +179,8 @@ export default function FormTickets() {
       motivo: "",
       derivado: null,
       pdf: null,
-      marca: "",
-      modelo: "",
+      marca: null,
+      modelo: null,
       hsUso: "",
       falla: "",
     });
@@ -280,9 +286,12 @@ export default function FormTickets() {
               required
             />
           </label>
-          <div>
-            <h2>Selecciona Marca y Modelo</h2>
-
+        </div>
+        <br />
+        <div className="marca-modelo-container">
+          <h2>Selecciona Marca y Modelo del equipo</h2>
+          <br />
+          <div className="formGrid">
             <CreatableSelect
               isClearable
               isLoading={loadingMarcas}
@@ -300,51 +309,52 @@ export default function FormTickets() {
               onChange={handleModeloChange}
               placeholder="Selecciona o crea un modelo"
             />
+
+            <label>
+              Horas de uso:<span className="obligatorio">*</span>
+              <input
+                type="text"
+                name="hsUso"
+                value={formData.hsUso}
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label>
+              Falla:<span className="obligatorio">*</span>
+              <input
+                type="text"
+                name="falla"
+                value={formData.falla}
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label className="fullWidth">
+              Motivo de contacto: <span className="obligatorio">*</span>
+              <textarea
+                name="motivo"
+                value={formData.motivo}
+                onChange={handleChange}
+                rows="3"
+              ></textarea>
+            </label>
+            <label>
+              Derivar:
+              <Select
+                name="derivado"
+                value={reclamosoptions.find(
+                  (option) => option.value === formData.derivado
+                )}
+                onChange={handleSelectChange}
+                options={reclamosoptions}
+                placeholder={selectedLabel || "Seleccionar"}
+                className="react-select"
+                isClearable
+              />
+            </label>
           </div>
-          <label>
-            Horas de uso:<span className="obligatorio">*</span>
-            <input
-              type="text"
-              name="hsUso"
-              value={formData.hsUso}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Falla:<span className="obligatorio">*</span>
-            <input
-              type="text"
-              name="falla"
-              value={formData.falla}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Derivar:
-            <Select
-              name="derivado"
-              value={reclamosoptions.find(
-                (option) => option.value === formData.derivado
-              )}
-              onChange={handleSelectChange}
-              options={reclamosoptions}
-              placeholder={selectedLabel || "Seleccionar"}
-              className="react-select"
-              isClearable
-            />
-          </label>
         </div>
-        <label className="fullWidth">
-          Motivo de contacto: <span className="obligatorio">*</span>
-          <textarea
-            name="motivo"
-            value={formData.motivo}
-            onChange={handleChange}
-            rows="4"
-          ></textarea>
-        </label>
         <div className="create-button-reclamo">
           <button type="submit">Enviar</button>
         </div>

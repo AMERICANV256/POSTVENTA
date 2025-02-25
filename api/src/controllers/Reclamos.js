@@ -22,10 +22,12 @@ const createReclamo = async (req, res) => {
       derivado,
       pdf,
       telefono2,
-      marca, // Aquí recibimos el ID de la marca
-      modelo, // Aquí recibimos el ID del modelo
+      marca,
+      modelo,
       hsUso,
       falla,
+      nombreMarca,
+      nombreModelo,
     } = req.body;
 
     // Validación de parámetros
@@ -37,9 +39,7 @@ const createReclamo = async (req, res) => {
       !cuit ||
       !telefono ||
       !email ||
-      !motivo ||
-      !marca || // Asegurarse de que 'marca' esté presente
-      !modelo // Asegurarse de que 'modelo' esté presente
+      !motivo
     ) {
       const error = new Error("Faltan parámetros en el cuerpo de la solicitud");
       error.status = 400;
@@ -68,7 +68,7 @@ const createReclamo = async (req, res) => {
       // Si no existe la marca, se crea una nueva
       marcaExistente = await Marca.create({
         id: marca,
-        nombre: "Nombre por defecto",
+        nombre: nombreMarca,
       }); // Usa un nombre por defecto si es necesario
     }
 
@@ -78,7 +78,7 @@ const createReclamo = async (req, res) => {
       // Si no existe el modelo, se crea uno nuevo
       modeloExistente = await Modelo.create({
         id: modelo,
-        nombre: "Modelo por defecto",
+        nombre: nombreModelo,
       }); // Usa un nombre por defecto si es necesario
     }
 
