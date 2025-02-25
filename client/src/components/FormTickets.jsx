@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useReclamo } from "../hooks/useReclamos";
 import { useCliente } from "../hooks/useClientesReclamantes";
-<<<<<<< HEAD
 import CreatableSelect from "react-select/creatable";
 import { useMarcas, useModelos } from "../hooks/useEquipo";
-=======
 import InputMask from "react-input-mask";
->>>>>>> 57ff499382b162b356a156f87e06d2929c2222c2
 
 export default function FormTickets() {
   const { mutate: formReclamo, isLoading } = useReclamo().reclamoMutation;
@@ -170,11 +167,8 @@ export default function FormTickets() {
       documento: "",
       cuit: "",
       telefono: "",
-<<<<<<< HEAD
       telefono2: "",
-=======
       direccion: "",
->>>>>>> 57ff499382b162b356a156f87e06d2929c2222c2
       email: "",
       motivo: "",
       derivado: null,
