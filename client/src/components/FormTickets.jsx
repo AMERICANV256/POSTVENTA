@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useReclamo } from "../hooks/useReclamos";
 import { useCliente } from "../hooks/useClientesReclamantes";
+<<<<<<< HEAD
 import CreatableSelect from "react-select/creatable";
 import { useMarcas, useModelos } from "../hooks/useEquipo";
+=======
+import InputMask from "react-input-mask";
+>>>>>>> 57ff499382b162b356a156f87e06d2929c2222c2
 
 export default function FormTickets() {
   const { mutate: formReclamo, isLoading } = useReclamo().reclamoMutation;
@@ -13,6 +17,7 @@ export default function FormTickets() {
     apellido: "",
     razonSocial: "",
     documento: "",
+    direccion: "",
     cuit: "",
     telefono: "",
     telefono2: "",
@@ -42,6 +47,7 @@ export default function FormTickets() {
         telefono: clienteByCuit.telefono || "",
         telefono2: clienteByCuit.telefono2 || "",
         email: clienteByCuit.email || "",
+        direccion: clienteByCuit.direccion || "",
       }));
     }
   }, [clienteByCuit, isSuccess]);
@@ -109,7 +115,48 @@ export default function FormTickets() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+    let regex;
+    let newValue = value;
+    switch (name) {
+      case "nombre":
+      case "apellido":
+        regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ\s]*$/;
+        if (regex.test(value)) {
+          setFormData({ ...formData, [name]: value });
+        }
+        break;
+
+      case "documento":
+      case "telefono":
+        regex = /^[0-9]*$/;
+        if (regex.test(value)) {
+          setFormData({ ...formData, [name]: value });
+        }
+        break;
+
+      case "cuit":
+        newValue = value.replace(/-/g, "").replace(/[^0-9]/g, "");
+
+        regex = /^[0-9]{0,11}$/;
+        if (regex.test(newValue)) {
+          setFormData({ ...formData, [name]: newValue });
+        }
+        break;
+      case "email":
+        newValue = value.replace(/[^a-zA-Z0-9@._-]/g, "");
+        setFormData({ ...formData, [name]: newValue });
+        break;
+
+      case "direccion":
+        newValue = value.replace(/[^a-zA-Z0-9\s.,-]/g, "");
+        setFormData({ ...formData, [name]: newValue });
+        break;
+
+      default:
+        setFormData({ ...formData, [name]: value });
+        break;
+    }
   };
 
   const handleSubmit = (e) => {
@@ -123,7 +170,11 @@ export default function FormTickets() {
       documento: "",
       cuit: "",
       telefono: "",
+<<<<<<< HEAD
       telefono2: "",
+=======
+      direccion: "",
+>>>>>>> 57ff499382b162b356a156f87e06d2929c2222c2
       email: "",
       motivo: "",
       derivado: null,
@@ -142,18 +193,22 @@ export default function FormTickets() {
         <div className="formGrid">
           <label>
             CUIT:<span className="obligatorio">*</span>
-            <input
-              type="text"
-              name="cuit"
+            <InputMask
+              mask="99-99999999-9"
               value={formData.cuit}
               onChange={handleChange}
-            />
+            >
+              {(inputProps) => (
+                <input {...inputProps} type="text" name="cuit" />
+              )}
+            </InputMask>
           </label>
           <label>
             Nombre: <span className="obligatorio">*</span>
             <input
               type="text"
               name="nombre"
+              max={100}
               value={formData.nombre}
               onChange={handleChange}
               required
@@ -165,6 +220,7 @@ export default function FormTickets() {
               type="text"
               name="apellido"
               value={formData.apellido}
+              max={100}
               onChange={handleChange}
               required
             />
@@ -175,6 +231,7 @@ export default function FormTickets() {
               type="text"
               name="razonSocial"
               value={formData.razonSocial}
+              max={100}
               onChange={handleChange}
             />
           </label>
@@ -184,16 +241,27 @@ export default function FormTickets() {
               type="text"
               name="documento"
               value={formData.documento}
+              max={10}
               onChange={handleChange}
               required
             />
           </label>
-
+          <label>
+            Dirección:
+            <input
+              type="text"
+              name="direccion"
+              max={100}
+              value={formData.direccion}
+              onChange={handleChange}
+            />
+          </label>
           <label>
             Teléfono:<span className="obligatorio">*</span>
             <input
               type="text"
               name="telefono"
+              max={50}
               value={formData.telefono}
               onChange={handleChange}
             />
@@ -212,6 +280,7 @@ export default function FormTickets() {
             <input
               type="email"
               name="email"
+              max={100}
               value={formData.email}
               onChange={handleChange}
               required

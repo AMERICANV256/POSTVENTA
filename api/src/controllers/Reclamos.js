@@ -41,7 +41,9 @@ const createReclamo = async (req, res) => {
       !marca || // Asegurarse de que 'marca' esté presente
       !modelo // Asegurarse de que 'modelo' esté presente
     ) {
-      throw "Faltan parámetros en el cuerpo de la solicitud";
+      const error = new Error("Faltan parámetros en el cuerpo de la solicitud");
+      error.status = 400;
+      throw error;
     }
 
     let cliente = await ClientesReclamantes.findOne({ where: { cuit } });

@@ -34,8 +34,7 @@ export const useReclamo = () => {
             Swal.fire({
               position: "center",
               icon: "warning",
-              title:
-                "Hay errores en el formulario; por favor, intente nuevamente",
+              title: "Por favor, completá los datos obligatorios",
               background: "#ffffff",
               iconColor: "#ffc107",
               customClass: {
