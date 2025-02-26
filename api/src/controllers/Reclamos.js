@@ -212,7 +212,9 @@ const updateDerivado = async (req, res) => {
       if (Object.keys(updateData).length > 0) {
         await reclamo.update(updateData);
         console.log(
-          `Reclamo ${id} actualizado con derivadoId ${updateData.derivadoId || reclamo.derivadoId} y estadoId ${updateData.estadoId || reclamo.estadoId}`
+          `Reclamo ${id} actualizado con derivadoId ${
+            updateData.derivadoId || reclamo.derivadoId
+          } y estadoId ${updateData.estadoId || reclamo.estadoId}`
         );
       } else {
         console.log(`No se actualizaron datos para el reclamo ${id}`);
@@ -309,6 +311,7 @@ const generarExcel = async (req, res) => {
       order: [["id", "DESC"]],
     });
 
+    const ExcelJS = require("exceljs");
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Reclamos");
 
@@ -325,14 +328,17 @@ const generarExcel = async (req, res) => {
     resultados.forEach((reclamo) => {
       worksheet.addRow({
         id: reclamo.id,
-        clienteNombre: reclamo.ClienteReclamante.nombre,
-        clienteApellido: reclamo.ClienteReclamante.apellido,
-        estado: reclamo.Estado.nombre,
-        derivado: reclamo.Derivados ? reclamo.Derivados.nombre : "No asignado",
-        marca: reclamo.Equipo ? reclamo.Equipo.Marca.nombre : "No asignado",
-        modelo: reclamo.Equipo ? reclamo.Equipo.Modelo.nombre : "No asignado",
+        clienteNombre: reclamo.ClientesReclamante?.nombre || "No asignado",
+        clienteApellido: reclamo.ClientesReclamante?.apellido || "No asignado",
+        estado: reclamo.Estado?.nombre || "No asignado",
+        derivado: reclamo.Derivados?.nombre || "No asignado",
+        marca: reclamo.Equipo?.Marca?.nombre || "No asignado",
+        modelo: reclamo.Equipo?.Modelo?.nombre || "No asignado",
       });
     });
+
+    // **Generar el archivo en buffer**
+    const buffer = await workbook.xlsx.writeBuffer();
 
     // Configurar la respuesta como un archivo descargable
     res.setHeader(
@@ -344,9 +350,7 @@ const generarExcel = async (req, res) => {
       `attachment; filename=reclamos_${Date.now()}.xlsx`
     );
 
-    // Escribir el archivo Excel al response
-    await workbook.xlsx.write(res);
-    res.end();
+    res.send(buffer);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error al generar el archivo Excel" });

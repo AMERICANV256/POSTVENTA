@@ -51,7 +51,7 @@ router.get("/usuarios/detail/:idUsuario", check.auth, obtenerDetalleUsuario);
 router.get("/usuarios/all", check.auth, getAllUsers);
 router.put("/usuarios/recoverpass", resetPassword);
 router.post("/reclamos/create", createReclamo);
-router.post("/reclamos/excel", generarExcel);
+router.get("/reclamos/excel", generarExcel);
 router.post("/reclamos/buscar", buscarReclamo);
 router.get("/reclamos/count", obtenerCantidadReclamos);
 router.put("/reclamos/edit", updateDerivado);
