@@ -4,6 +4,8 @@ import { useReclamo } from "../hooks/useReclamos";
 import { useCliente } from "../hooks/useClientesReclamantes";
 import CreatableSelect from "react-select/creatable";
 import { useMarcas, useModelos } from "../hooks/useEquipo";
+import { useEstados } from "../hooks/useEstados";
+import { useDerivados } from "../hooks/useDerivados";
 import InputMask from "react-input-mask";
 
 export default function FormTickets() {
@@ -26,6 +28,7 @@ export default function FormTickets() {
     modelo: null,
     hsUso: "",
     falla: "",
+    estado: null,
   });
 
   const cuit = formData.cuit;
@@ -53,9 +56,13 @@ export default function FormTickets() {
 
   const { data: marcas, isLoading: loadingMarcas } = useMarcas();
   const { data: modelos, isLoading: loadingModelos } = useModelos();
+  const { data: estados, isLoading: loadingEstados } = useEstados();
+  const { data: derivados, isLoading: loadingDerivados } = useDerivados();
 
   const [selectedMarca, setSelectedMarca] = useState(null);
   const [selectedModelo, setSelectedModelo] = useState(null);
+  const [selectedEstado, setSelectedEstado] = useState(null);
+  const [selectedDerivados, setSelectedDerivados] = useState(null);
 
   const marcaOptions = marcas?.map((marca) => ({
     value: marca.id,
@@ -65,6 +72,16 @@ export default function FormTickets() {
   const modeloOptions = modelos?.map((modelo) => ({
     value: modelo.id,
     label: modelo.nombre,
+  }));
+
+  const estadosOptions = estados?.map((estado) => ({
+    value: estado.id,
+    label: estado.nombre,
+  }));
+
+  const derivadosOptions = derivados?.map((derivado) => ({
+    value: derivado.id,
+    label: derivado.nombre,
   }));
 
   const handleMarcaChange = (selectedOption) => {
@@ -89,32 +106,25 @@ export default function FormTickets() {
     }));
   };
 
-  const reclamos = [
-    {
-      value: 1,
-      label: "Servicios",
-    },
-    {
-      value: 2,
-      label: "Garantías",
-    },
-  ];
-
-  const reclamosoptions = reclamos.map((reclamo) => ({
-    value: reclamo.value,
-    label: reclamo.label,
-  }));
-
-  const handleSelectChange = (selectedOption) => {
-    setFormData({
-      ...formData,
-      derivado: selectedOption ? selectedOption.value : null,
-    });
+  const handleEstadoChange = (selectedOption) => {
+    const estadoId = selectedOption ? parseInt(selectedOption.value, 10) : null;
+    setSelectedEstado(selectedOption);
+    setFormData((prevState) => ({
+      ...prevState,
+      estado: estadoId,
+    }));
   };
 
-  const selectedLabel = reclamos.find(
-    (reclamo) => reclamo.value === formData.derivado
-  )?.label;
+  const handleDerivadoChange = (selectedOption) => {
+    const derivadoId = selectedOption
+      ? parseInt(selectedOption.value, 10)
+      : null;
+    setSelectedDerivados(selectedOption);
+    setFormData((prevState) => ({
+      ...prevState,
+      derivado: derivadoId,
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -183,8 +193,10 @@ export default function FormTickets() {
       modelo: null,
       hsUso: "",
       falla: "",
+      estado: null,
     });
   };
+
   return (
     <div className="clientFormContainer">
       <h2>Ingresar Reclamo</h2>
@@ -330,28 +342,44 @@ export default function FormTickets() {
                 required
               />
             </label>
+
+            <label>
+              Derivar:
+              <Select
+                name="derivado"
+                value={derivadosOptions?.find(
+                  (option) => option.value === formData.derivado
+                )}
+                onChange={handleDerivadoChange}
+                options={derivadosOptions}
+                placeholder="Seleccionar"
+                className="react-select"
+                isClearable
+              />
+            </label>
+            <label>
+              Estado:
+              <Select
+                name="estado"
+                value={estadosOptions?.find(
+                  (option) => option.value === formData.estado
+                )}
+                onChange={handleEstadoChange}
+                options={estadosOptions}
+                placeholder="Seleccionar"
+                className="react-select"
+                isClearable
+              />
+            </label>
+
             <label className="fullWidth">
               Motivo de contacto: <span className="obligatorio">*</span>
               <textarea
                 name="motivo"
                 value={formData.motivo}
                 onChange={handleChange}
-                rows="3"
+                rows="4"
               ></textarea>
-            </label>
-            <label>
-              Derivar:
-              <Select
-                name="derivado"
-                value={reclamosoptions.find(
-                  (option) => option.value === formData.derivado
-                )}
-                onChange={handleSelectChange}
-                options={reclamosoptions}
-                placeholder={selectedLabel || "Seleccionar"}
-                className="react-select"
-                isClearable
-              />
             </label>
           </div>
         </div>

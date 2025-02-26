@@ -47,6 +47,14 @@ const MyDocument = ({ ticket, personalData }) => (
           {ticket.motivo}
         </Text>
         <Text style={styles.label}>
+          <Text style={styles.label}>Estado: </Text>
+          {ticket.Estado?.nombre || "Sin estado"}
+        </Text>
+        <Text style={styles.label}>
+          <Text style={styles.label}>Derivado a: </Text>
+          {ticket.Derivado?.nombre || "No derivado"}
+        </Text>
+        <Text style={styles.label}>
           <Text style={styles.label}>Fecha de Creación: </Text>
           {formatDate(ticket.createdAt)}
         </Text>
@@ -54,18 +62,34 @@ const MyDocument = ({ ticket, personalData }) => (
           <Text style={styles.label}>Última Actualización: </Text>
           {formatDate(ticket.updatedAt)}
         </Text>
-        <Text style={styles.label}>
-          <Text style={styles.label}>Derivaciones: </Text>
-          {ticket.Derivacions.length > 0
-            ? ticket.Derivacions.map((derivacion, i) => (
-                <Text key={i}>
-                  - {derivacion.derivacion} (Fecha:{" "}
-                  {formatDate(derivacion.fechaDerivacion)})
-                </Text>
-              ))
-            : "No hay derivaciones."}
-        </Text>
       </View>
+
+      {/* Información del Equipo */}
+      {ticket.Equipo ? (
+        <View style={styles.section}>
+          <Text style={styles.header}>Información del Equipo</Text>
+          <Text style={styles.label}>
+            <Text style={styles.label}>Marca: </Text>
+            {ticket.Equipo.Marca?.nombre || "Sin marca"}
+          </Text>
+          <Text style={styles.label}>
+            <Text style={styles.label}>Modelo: </Text>
+            {ticket.Equipo.Modelo?.nombre || "Sin modelo"}
+          </Text>
+          <Text style={styles.label}>
+            <Text style={styles.label}>Falla: </Text>
+            {ticket.Equipo.falla || "Sin falla reportada"}
+          </Text>
+          <Text style={styles.label}>
+            <Text style={styles.label}>Horas de Uso: </Text>
+            {ticket.Equipo.hsUso || "No especificado"}
+          </Text>
+        </View>
+      ) : (
+        <Text style={styles.label}>
+          No hay información del equipo disponible.
+        </Text>
+      )}
 
       {/* Pie de página */}
       <View style={styles.footer}>

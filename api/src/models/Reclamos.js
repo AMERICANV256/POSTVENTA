@@ -16,9 +16,21 @@ module.exports = (sequelize) => {
           notEmpty: true,
         },
       },
-      derivado: {
+      derivadoId: {
         type: DataTypes.INTEGER,
         allowNull: true,
+        references: {
+          model: "Derivados",
+          key: "id",
+        },
+      },
+      estadoId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "Estados",
+          key: "id",
+        },
       },
       pdf: {
         type: DataTypes.TEXT,

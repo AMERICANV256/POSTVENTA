@@ -41,17 +41,20 @@ sequelize.models = Object.fromEntries(capsEntries);
 // En sequelize.models están todos los modelos importados como propiedades
 // Para relacionarlos hacemos un destructuring
 const {
-  Usuarios,
   Reclamos,
-  Derivacion,
   ClientesReclamantes,
   Equipo,
   Marca,
   Modelo,
+  Estado,
+  Derivados,
 } = sequelize.models;
 
-Reclamos.hasMany(Derivacion, { foreignKey: "reclamoId" });
-Derivacion.belongsTo(Reclamos, { foreignKey: "reclamoId" });
+Reclamos.belongsTo(Estado, { foreignKey: "estadoId" });
+Estado.hasMany(Reclamos, { foreignKey: "estadoId" });
+
+Reclamos.belongsTo(Derivados, { foreignKey: "derivadoId" });
+Derivados.hasMany(Reclamos, { foreignKey: "derivadoId" });
 
 ClientesReclamantes.hasMany(Reclamos, { foreignKey: "clienteReclamanteId" });
 Reclamos.belongsTo(ClientesReclamantes, { foreignKey: "clienteReclamanteId" });

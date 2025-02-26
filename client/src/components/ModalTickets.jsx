@@ -3,9 +3,47 @@ import moment from "moment";
 import { useReclamo } from "../hooks/useReclamos";
 import Select from "react-select";
 import Pdf from "./Pdf";
+import { useDerivados } from "../hooks/useDerivados";
+import { useEstados } from "../hooks/useEstados";
 
 export default function ModalTickets({ data, setShowTickets }) {
   const [showModal, setShowModal] = useState(false);
+
+  const { data: estados, isLoading: loadingEstados } = useEstados();
+  const { data: derivados, isLoading: loadingDerivados } = useDerivados();
+
+  const [selectedEstado, setSelectedEstado] = useState(null);
+  const [selectedDerivados, setSelectedDerivados] = useState(null);
+
+  const estadosOptions = estados?.map((estado) => ({
+    value: estado.id,
+    label: estado.nombre,
+  }));
+
+  const derivadosOptions = derivados?.map((derivado) => ({
+    value: derivado.id,
+    label: derivado.nombre,
+  }));
+
+  const handleEstadoChange = (selectedOption) => {
+    const estadoId = selectedOption ? parseInt(selectedOption.value, 10) : null;
+    setSelectedEstado(selectedOption);
+    setFormData((prevState) => ({
+      ...prevState,
+      estado: estadoId,
+    }));
+  };
+
+  const handleDerivadoChange = (selectedOption) => {
+    const derivadoId = selectedOption
+      ? parseInt(selectedOption.value, 10)
+      : null;
+    setSelectedDerivados(selectedOption);
+    setFormData((prevState) => ({
+      ...prevState,
+      derivado: derivadoId,
+    }));
+  };
 
   const [formData, setFormData] = useState({});
 
@@ -26,34 +64,12 @@ export default function ModalTickets({ data, setShowTickets }) {
 
   const { mutate: editDerivado, isLoading } = useReclamo().editreclamoMutation;
 
-  const reclamos = [
-    {
-      value: 1,
-      label: "Post Venta",
-    },
-    {
-      value: 2,
-      label: "Gerencia",
-    },
-  ];
-
-  const reclamosoptions = reclamos.map((reclamo) => ({
-    value: reclamo.value,
-    label: reclamo.label,
-  }));
-
-  const handleSelectChange = (selectedOption, reclamoId) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [Number(reclamoId)]: selectedOption ? selectedOption.value : null,
-    }));
-  };
-
   const handleSave = () => {
-    const payload = Object.entries(formData).map(([id, derivado]) => ({
-      id: Number(id),
-      derivado: Number(derivado),
-    }));
+    const payload = {
+      id: data?.data?.id,
+      derivadoId: formData.derivado,
+      estadoId: formData.estado,
+    };
 
     editDerivado(payload);
   };
@@ -103,6 +119,10 @@ export default function ModalTickets({ data, setShowTickets }) {
                           <strong>Teléfono:</strong> {data.data.telefono}
                         </p>
                         <p>
+                          <strong>Teléfono alternativo:</strong>{" "}
+                          {data.data.telefono2}
+                        </p>
+                        <p>
                           <strong>Email:</strong> {data.data.email}
                         </p>
                       </div>
@@ -133,6 +153,14 @@ export default function ModalTickets({ data, setShowTickets }) {
                               <strong>Motivo:</strong> {reclamo.motivo}
                             </p>
                             <p>
+                              <strong>Estado:</strong>{" "}
+                              {reclamo.Estado?.nombre || "Sin estado"}
+                            </p>
+                            <p>
+                              <strong>Derivado a:</strong>{" "}
+                              {reclamo.Derivado?.nombre || "No derivado"}
+                            </p>
+                            <p>
                               <strong>Fecha de Creación:</strong>{" "}
                               {formatDate(reclamo.createdAt)}
                             </p>
@@ -140,39 +168,58 @@ export default function ModalTickets({ data, setShowTickets }) {
                               <strong>Última Actualización:</strong>{" "}
                               {formatDate(reclamo.updatedAt)}
                             </p>
-                            <hr />
-                            {reclamo.Derivacions?.length > 0 && (
-                              <div>
+                            {reclamo.Equipo && (
+                              <>
+                                <hr />
                                 <h5 className="titulosReclamosDerivaciones">
-                                  Derivaciones
+                                  Información del Equipo
                                 </h5>
-                                {reclamo.Derivacions.map((derivacion, i) => (
-                                  <div key={i}>
-                                    <p>
-                                      <strong>Sector:</strong>{" "}
-                                      {derivacion.derivacion}
-                                    </p>
-                                    <p>
-                                      <strong>Fecha de Derivación:</strong>{" "}
-                                      {formatDate(derivacion.fechaDerivacion)}
-                                    </p>
-                                  </div>
-                                ))}
-                              </div>
+                                <p>
+                                  <strong>Marca:</strong>{" "}
+                                  {reclamo.Equipo.Marca?.nombre || "Sin marca"}
+                                </p>
+                                <p>
+                                  <strong>Modelo:</strong>{" "}
+                                  {reclamo.Equipo.Modelo?.nombre ||
+                                    "Sin modelo"}
+                                </p>
+                                <p>
+                                  <strong>Falla:</strong>{" "}
+                                  {reclamo.Equipo.falla ||
+                                    "Sin falla reportada"}
+                                </p>
+                                <p>
+                                  <strong>Horas de Uso:</strong>{" "}
+                                  {reclamo.Equipo.hsUso || "No especificado"}
+                                </p>
+                              </>
                             )}
+
+                            <hr />
                           </div>
                           <label>
                             Derivar:
                             <Select
                               name="derivado"
-                              value={reclamosoptions.find(
-                                (option) =>
-                                  option.value === formData[Number(reclamo.id)]
+                              value={derivadosOptions?.find(
+                                (option) => option.value === formData.derivado
                               )}
-                              onChange={(selectedOption) =>
-                                handleSelectChange(selectedOption, reclamo.id)
-                              }
-                              options={reclamosoptions}
+                              onChange={handleDerivadoChange}
+                              options={derivadosOptions}
+                              placeholder="Seleccionar"
+                              className="react-select"
+                              isClearable
+                            />
+                          </label>
+                          <label>
+                            Estado:
+                            <Select
+                              name="estado"
+                              value={estadosOptions?.find(
+                                (option) => option.value === formData.estado
+                              )}
+                              onChange={handleEstadoChange}
+                              options={estadosOptions}
                               placeholder="Seleccionar"
                               className="react-select"
                               isClearable

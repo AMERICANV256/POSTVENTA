@@ -308,7 +308,7 @@ h2 {
 }
 
 .fullWidth {
-  grid-column: span 1;
+  grid-column: span 2;
 }
 
 .clientForm button {
@@ -463,7 +463,7 @@ h2 span {
 
 .titulosReclamosDerivaciones {
   font-weight: 600;
-  font-size: 28px;
+  font-size: 25px;
 }
 
 .sombreadoLeve {
@@ -475,6 +475,10 @@ h2 span {
 .marca-modelo-container {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.marca-modelo-container label {
+  margin-top: 1.5rem;
 }
 
 .marca-modelo-container h2 {

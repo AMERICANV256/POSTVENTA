@@ -1,10 +1,11 @@
 const {
   Reclamos,
-  Derivacion,
+  Derivados,
   ClientesReclamantes,
   Equipo,
   Marca,
   Modelo,
+  Estado,
 } = require("../db.js");
 
 const createReclamo = async (req, res) => {
@@ -28,6 +29,7 @@ const createReclamo = async (req, res) => {
       falla,
       nombreMarca,
       nombreModelo,
+      estado,
     } = req.body;
 
     // Validación de parámetros
@@ -39,7 +41,8 @@ const createReclamo = async (req, res) => {
       !cuit ||
       !telefono ||
       !email ||
-      !motivo
+      !motivo ||
+      !estado
     ) {
       const error = new Error("Faltan parámetros en el cuerpo de la solicitud");
       error.status = 400;
@@ -62,24 +65,24 @@ const createReclamo = async (req, res) => {
       });
     }
 
-    // Buscar la marca por ID, no por nombre
+    // Buscar la marca por ID
     let marcaExistente = await Marca.findOne({ where: { id: marca } });
     if (!marcaExistente) {
       // Si no existe la marca, se crea una nueva
       marcaExistente = await Marca.create({
         id: marca,
         nombre: nombreMarca,
-      }); // Usa un nombre por defecto si es necesario
+      });
     }
 
-    // Buscar el modelo por ID, no por nombre
+    // Buscar el modelo por ID
     let modeloExistente = await Modelo.findOne({ where: { id: modelo } });
     if (!modeloExistente) {
       // Si no existe el modelo, se crea uno nuevo
       modeloExistente = await Modelo.create({
         id: modelo,
         nombre: nombreModelo,
-      }); // Usa un nombre por defecto si es necesario
+      });
     }
 
     let equipo = await Equipo.findOne({
@@ -103,21 +106,11 @@ const createReclamo = async (req, res) => {
     const nuevoReclamo = await Reclamos.create({
       clienteReclamanteId: cliente.id,
       motivo,
-      derivado,
+      derivadoId: derivado,
       pdf,
       equipoId: equipo.id,
+      estadoId: estado,
     });
-
-    if (derivado === 1 || derivado === 2) {
-      const tipoDerivacion = derivado === 1 ? "Servicios" : "Garantías";
-
-      await Derivacion.create({
-        reclamoId: nuevoReclamo.id,
-        derivacion: tipoDerivacion,
-        fechaDerivacion: new Date(),
-        tipo: derivado,
-      });
-    }
 
     return res.status(201).json(nuevoReclamo);
   } catch (error) {
@@ -130,12 +123,10 @@ const buscarReclamo = async (req, res) => {
   try {
     const { email, cuit } = req.body;
 
-    // Validar que al menos uno de los campos esté presente
     if (!email && !cuit) {
       throw "Debe proporcionar al menos un email o un cuit para buscar.";
     }
 
-    // Construir la cláusula where dinámicamente
     const whereClause = {};
     if (email) whereClause.email = email;
     if (cuit) whereClause.cuit = cuit;
@@ -147,8 +138,26 @@ const buscarReclamo = async (req, res) => {
           model: Reclamos,
           include: [
             {
-              model: Derivacion,
+              model: Derivados,
               required: false,
+              attributes: ["nombre"],
+            },
+            {
+              model: Estado,
+              attributes: ["nombre"],
+            },
+            {
+              model: Equipo,
+              include: [
+                {
+                  model: Marca,
+                  attributes: ["nombre"],
+                },
+                {
+                  model: Modelo,
+                  attributes: ["nombre"],
+                },
+              ],
             },
           ],
           order: [["id", "DESC"]],
@@ -171,11 +180,15 @@ const buscarReclamo = async (req, res) => {
 
 const updateDerivado = async (req, res) => {
   try {
-    const updates = req.body; // Ahora esperamos un array de objetos
+    const updates = Array.isArray(req.body) ? req.body : [req.body];
 
-    // Iterar sobre cada reclamo en el array
-    for (const { id, derivado } of updates) {
-      // Buscar el reclamo por ID
+    for (const { id, derivadoId, estadoId } of updates) {
+      if (!id) {
+        return res
+          .status(400)
+          .json({ message: "El ID es obligatorio para la actualización" });
+      }
+
       const reclamo = await Reclamos.findByPk(id);
 
       if (!reclamo) {
@@ -184,45 +197,30 @@ const updateDerivado = async (req, res) => {
           .json({ message: `Reclamo con ID ${id} no encontrado` });
       }
 
-      // Si se pasa el campo derivado, actualizamos la derivación
-      if (derivado === 1 || derivado === 2) {
-        const tipoDerivacion = derivado === 1 ? "Postventa" : "Gerencia";
+      const updateData = {};
+      if (derivadoId !== undefined) updateData.derivadoId = derivadoId;
+      if (estadoId !== undefined) updateData.estadoId = estadoId;
 
-        // Buscar si existe una derivación asociada al reclamo
-        let derivacion = await Derivacion.findOne({
-          where: { reclamoId: id },
-        });
-
-        if (derivacion) {
-          // Si ya existe una derivación, la actualizamos
-          await derivacion.update({
-            derivacion: tipoDerivacion,
-            fechaDerivacion: new Date(),
-            tipo: derivado,
-          });
-        } else {
-          // Si no existe una derivación, creamos una nueva
-          await Derivacion.create({
-            reclamoId: id,
-            derivacion: tipoDerivacion,
-            fechaDerivacion: new Date(),
-            tipo: derivado,
-          });
-        }
+      if (Object.keys(updateData).length > 0) {
+        await reclamo.update(updateData);
+        console.log(
+          `Reclamo ${id} actualizado con derivadoId ${
+            derivadoId || reclamo.derivadoId
+          } y estadoId ${estadoId || reclamo.estadoId}`
+        );
       } else {
-        return res.status(400).json({
-          message: `El valor de 'derivado' para el reclamo ${id} no es válido`,
-        });
+        console.log(`No se actualizaron datos para el reclamo ${id}`);
       }
     }
 
-    // Devolver una respuesta exitosa
     return res
       .status(200)
-      .json({ message: "Derivaciones actualizadas correctamente" });
+      .json({ message: "Reclamos actualizados correctamente" });
   } catch (error) {
     console.error(error);
-    return res.status(400).send(error);
+    return res
+      .status(500)
+      .json({ message: "Error al actualizar reclamos", error });
   }
 };
 
