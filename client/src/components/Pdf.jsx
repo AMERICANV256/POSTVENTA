@@ -64,12 +64,8 @@ const MyDocument = ({ ticket, personalData }) => (
             </Text>
           </Text>
           <Text style={styles.label}>
-            Creación:{" "}
+            Fecha del Reclamo:{" "}
             <Text style={styles.value}>{formatDate(ticket.createdAt)}</Text>
-          </Text>
-          <Text style={styles.label}>
-            Última actualización:{" "}
-            <Text style={styles.value}>{formatDate(ticket.updatedAt)}</Text>
           </Text>
         </View>
       </View>
