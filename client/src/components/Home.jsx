@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import MisTickets from "./MisTickets";
 import FormTickets from "./FormTickets";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const navigation = useNavigate();
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -22,6 +25,11 @@ export default function Home() {
       <div className="buttonMyTickets">
         <button onClick={() => setShowTickets(!showTickets)}>
           {showTickets ? "Ocultar Reclamos" : "Buscar Reclamos"}
+        </button>
+      </div>
+      <div className="buttonMyTicketsestadistica">
+        <button onClick={() => navigation("/estadistica")}>
+          Ver estadística
         </button>
       </div>
 

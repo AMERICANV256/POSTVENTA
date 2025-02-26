@@ -14,6 +14,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import BackButton from "../UI/BackButton";
 
 export default function Estadistica() {
   const { data: count, isLoading: loadingCount } = useReclamosCount();
@@ -39,62 +40,70 @@ export default function Estadistica() {
   };
 
   return (
-    <div className="estadistica-container">
+    <div>
+      <BackButton />
       <h2 className="titulo">Estadísticas de Reclamos</h2>
-
-      {/* Gráfico de Reclamos por Estado */}
-      <div className="grafico-container">
-        <h3>Reclamos por Estado</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={reclamosPorEstadoData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="cantidad" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
-        <div className="estadistica">
-          {reclamosPorEstadoData.map((estado) => (
-            <p key={estado.name}>
-              {estado.name}:{" "}
-              <strong>{formatearCantidad(estado.cantidad)}</strong>
-            </p>
-          ))}
+      <div className="estadistica-container">
+        {/* Gráfico de Reclamos por Estado */}
+        <div className="grafico-container">
+          <h3>Reclamos por Estado</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={reclamosPorEstadoData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="cantidad">
+                {reclamosPorEstadoData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          <div className="estadistica">
+            {reclamosPorEstadoData.map((estado) => (
+              <p key={estado.name}>
+                {estado.name}:{" "}
+                <strong>{formatearCantidad(estado.cantidad)}</strong>
+              </p>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Gráfico de Reclamos por Derivado */}
-      <div className="grafico-container">
-        <h3>Reclamos por Derivado</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              data={reclamosPorDerivadoData}
-              dataKey="cantidad"
-              nameKey="name"
-              outerRadius={80}
-              fill="#8884d8"
-            >
-              {reclamosPorDerivadoData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
-        <div className="estadistica">
-          {reclamosPorDerivadoData.map((derivado) => (
-            <p key={derivado.name}>
-              {derivado.name}:{" "}
-              <strong>{formatearCantidad(derivado.cantidad)}</strong>
-            </p>
-          ))}
+        <div className="grafico-container">
+          <h3>Reclamos por Derivado</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={reclamosPorDerivadoData}
+                dataKey="cantidad"
+                nameKey="name"
+                outerRadius={80}
+                fill="#8884d8"
+              >
+                {reclamosPorDerivadoData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="estadistica">
+            {reclamosPorDerivadoData.map((derivado) => (
+              <p key={derivado.name}>
+                {derivado.name}:{" "}
+                <strong>{formatearCantidad(derivado.cantidad)}</strong>
+              </p>
+            ))}
+          </div>
         </div>
       </div>
       <Excel />

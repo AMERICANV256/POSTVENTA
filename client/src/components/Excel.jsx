@@ -32,8 +32,10 @@ export default function Excel() {
   };
 
   return (
-    <div>
-      <button onClick={descargarExcel}>Descargar Excel de Reclamos</button>
+    <div className="excel-container">
+      <button className="excel-button" onClick={descargarExcel}>
+        📂 Descargar Excel
+      </button>
     </div>
   );
 }

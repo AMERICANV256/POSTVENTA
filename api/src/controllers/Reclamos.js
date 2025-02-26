@@ -337,10 +337,8 @@ const generarExcel = async (req, res) => {
       });
     });
 
-    // **Generar el archivo en buffer**
     const buffer = await workbook.xlsx.writeBuffer();
 
-    // Configurar la respuesta como un archivo descargable
     res.setHeader(
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
