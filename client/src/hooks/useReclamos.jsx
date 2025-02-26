@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ReclamosAPI } from "../components/api/ReclamosAPI";
 import Swal from "sweetalert2";
 
@@ -12,6 +12,19 @@ const postCreateReclamo = async (data) => {
 
 const putderivado = async (data) => {
   return await ReclamosAPI.put(`/edit`, data);
+};
+
+const fetchCountReclamos = async () => {
+  const { data } = await ReclamosAPI.get(`/count`);
+  return data;
+};
+
+export const useReclamosCount = () => {
+  return useQuery({
+    queryKey: ["countReclamos"],
+    queryFn: fetchCountReclamos,
+    staleTime: 1000 * 60 * 5,
+  });
 };
 
 export const useReclamo = () => {

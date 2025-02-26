@@ -489,3 +489,46 @@ h2 span {
   display: block;
   margin: 0 auto;
 }
+
+.estadistica-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin: 0 auto;
+  font-family: "Arial", sans-serif;
+}
+
+.titulo {
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.grafico-container {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.grafico-container h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.estadistica p {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 5px 0;
+  text-align: center;
+}
+
+.estadistica strong {
+  color: #007bff;
+}

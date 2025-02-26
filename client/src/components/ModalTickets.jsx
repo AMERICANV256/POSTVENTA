@@ -25,27 +25,41 @@ export default function ModalTickets({ data, setShowTickets }) {
     label: derivado.nombre,
   }));
 
-  const handleEstadoChange = (selectedOption) => {
+  const [formData, setFormData] = useState([]);
+
+  useEffect(() => {
+    if (data?.data?.Reclamos?.length > 0) {
+      setFormData(
+        data.data.Reclamos.map((reclamo) => ({
+          id: reclamo.id,
+          estado: reclamo.Estado?.id || null,
+          derivado: reclamo.Derivado?.id || null,
+        }))
+      );
+    }
+  }, [data]);
+
+  const handleEstadoChange = (selectedOption, index) => {
     const estadoId = selectedOption ? parseInt(selectedOption.value, 10) : null;
-    setSelectedEstado(selectedOption);
-    setFormData((prevState) => ({
-      ...prevState,
-      estado: estadoId,
-    }));
+    setFormData((prevState) =>
+      prevState.map((item, i) =>
+        i === index ? { ...item, estado: estadoId } : item
+      )
+    );
   };
 
-  const handleDerivadoChange = (selectedOption) => {
+  const handleDerivadoChange = (selectedOption, index) => {
     const derivadoId = selectedOption
       ? parseInt(selectedOption.value, 10)
       : null;
-    setSelectedDerivados(selectedOption);
-    setFormData((prevState) => ({
-      ...prevState,
-      derivado: derivadoId,
-    }));
+    setFormData((prevState) =>
+      prevState.map((item, i) =>
+        i === index ? { ...item, derivado: derivadoId } : item
+      )
+    );
   };
 
-  const [formData, setFormData] = useState({});
+  useEffect(() => {}, [formData]);
 
   useEffect(() => {
     if (data?.data?.length > 0) {
@@ -65,11 +79,11 @@ export default function ModalTickets({ data, setShowTickets }) {
   const { mutate: editDerivado, isLoading } = useReclamo().editreclamoMutation;
 
   const handleSave = () => {
-    const payload = {
-      id: data?.data?.id,
-      derivadoId: formData.derivado,
-      estadoId: formData.estado,
-    };
+    const payload = formData.map((item) => ({
+      id: item.id,
+      derivadoId: item.derivado,
+      estadoId: item.estado,
+    }));
 
     editDerivado(payload);
   };
@@ -201,10 +215,15 @@ export default function ModalTickets({ data, setShowTickets }) {
                             Derivar:
                             <Select
                               name="derivado"
-                              value={derivadosOptions?.find(
-                                (option) => option.value === formData.derivado
-                              )}
-                              onChange={handleDerivadoChange}
+                              value={
+                                derivadosOptions.find(
+                                  (option) =>
+                                    option.value === formData[index]?.derivado
+                                ) || null
+                              }
+                              onChange={(selectedOption) =>
+                                handleDerivadoChange(selectedOption, index)
+                              }
                               options={derivadosOptions}
                               placeholder="Seleccionar"
                               className="react-select"
@@ -215,10 +234,15 @@ export default function ModalTickets({ data, setShowTickets }) {
                             Estado:
                             <Select
                               name="estado"
-                              value={estadosOptions?.find(
-                                (option) => option.value === formData.estado
-                              )}
-                              onChange={handleEstadoChange}
+                              value={
+                                estadosOptions.find(
+                                  (option) =>
+                                    option.value === formData[index]?.estado
+                                ) || null
+                              }
+                              onChange={(selectedOption) =>
+                                handleEstadoChange(selectedOption, index)
+                              }
                               options={estadosOptions}
                               placeholder="Seleccionar"
                               className="react-select"

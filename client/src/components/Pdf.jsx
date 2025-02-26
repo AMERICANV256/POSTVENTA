@@ -20,75 +20,93 @@ const formatDate = (date) => {
 
 const MyDocument = ({ ticket, personalData }) => (
   <Document>
-    <Page size={{ width: 595.28, height: 400 }} style={styles.page}>
-      {/* Datos personales del reclamante */}
+    <Page Page size={{ width: 595.28, height: 400 }} style={styles.page}>
       <View style={styles.section}>
-        <Text style={styles.header}>Datos Personales del Reclamante</Text>
-        <Text style={styles.label}>
-          Nombre:{" "}
-          <Text style={styles.value}>
-            {personalData.nombre} {personalData.apellido}
+        <Text style={styles.header}>Datos Personales</Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>
+            Nombre:{" "}
+            <Text style={styles.value}>
+              {personalData.nombre} {personalData.apellido}
+            </Text>
           </Text>
-        </Text>
-        <Text style={styles.label}>
-          Razón Social:{" "}
-          <Text style={styles.value}>{personalData.razonSocial}</Text>
-        </Text>
-        <Text style={styles.label}>
-          CUIT: <Text style={styles.value}>{personalData.cuit}</Text>
-        </Text>
+          <Text style={styles.label}>
+            Razón Social:{" "}
+            <Text style={styles.value}>{personalData.razonSocial}</Text>
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>
+            CUIT: <Text style={styles.value}>{personalData.cuit}</Text>
+          </Text>
+        </View>
       </View>
 
-      {/* Reclamo */}
+      {/* Detalles del Ticket */}
       <View style={styles.section}>
         <Text style={styles.header}>Ticket #{ticket.id}</Text>
-        <Text style={styles.label}>
-          <Text style={styles.label}>Motivo: </Text>
-          {ticket.motivo}
-        </Text>
-        <Text style={styles.label}>
-          <Text style={styles.label}>Estado: </Text>
-          {ticket.Estado?.nombre || "Sin estado"}
-        </Text>
-        <Text style={styles.label}>
-          <Text style={styles.label}>Derivado a: </Text>
-          {ticket.Derivado?.nombre || "No derivado"}
-        </Text>
-        <Text style={styles.label}>
-          <Text style={styles.label}>Fecha de Creación: </Text>
-          {formatDate(ticket.createdAt)}
-        </Text>
-        <Text style={styles.label}>
-          <Text style={styles.label}>Última Actualización: </Text>
-          {formatDate(ticket.updatedAt)}
-        </Text>
+        <View style={styles.row}>
+          <Text style={styles.label}>
+            Motivo: <Text style={styles.value}>{ticket.motivo}</Text>
+          </Text>
+          <Text style={styles.label}>
+            Estado:{" "}
+            <Text style={styles.value}>
+              {ticket.Estado?.nombre || "Sin estado"}
+            </Text>
+          </Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.label}>
+            Derivado a:{" "}
+            <Text style={styles.value}>
+              {ticket.Derivado?.nombre || "No derivado"}
+            </Text>
+          </Text>
+          <Text style={styles.label}>
+            Creación:{" "}
+            <Text style={styles.value}>{formatDate(ticket.createdAt)}</Text>
+          </Text>
+          <Text style={styles.label}>
+            Última actualización:{" "}
+            <Text style={styles.value}>{formatDate(ticket.updatedAt)}</Text>
+          </Text>
+        </View>
       </View>
 
       {/* Información del Equipo */}
-      {ticket.Equipo ? (
+      {ticket.Equipo && (
         <View style={styles.section}>
           <Text style={styles.header}>Información del Equipo</Text>
-          <Text style={styles.label}>
-            <Text style={styles.label}>Marca: </Text>
-            {ticket.Equipo.Marca?.nombre || "Sin marca"}
-          </Text>
-          <Text style={styles.label}>
-            <Text style={styles.label}>Modelo: </Text>
-            {ticket.Equipo.Modelo?.nombre || "Sin modelo"}
-          </Text>
-          <Text style={styles.label}>
-            <Text style={styles.label}>Falla: </Text>
-            {ticket.Equipo.falla || "Sin falla reportada"}
-          </Text>
-          <Text style={styles.label}>
-            <Text style={styles.label}>Horas de Uso: </Text>
-            {ticket.Equipo.hsUso || "No especificado"}
-          </Text>
+          <View style={styles.row}>
+            <Text style={styles.label}>
+              Marca:{" "}
+              <Text style={styles.value}>
+                {ticket.Equipo.Marca?.nombre || "Sin marca"}
+              </Text>
+            </Text>
+            <Text style={styles.label}>
+              Modelo:{" "}
+              <Text style={styles.value}>
+                {ticket.Equipo.Modelo?.nombre || "Sin modelo"}
+              </Text>
+            </Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>
+              Falla:{" "}
+              <Text style={styles.value}>
+                {ticket.Equipo.falla || "Sin falla reportada"}
+              </Text>
+            </Text>
+            <Text style={styles.label}>
+              Horas de Uso:{" "}
+              <Text style={styles.value}>
+                {ticket.Equipo.hsUso || "No especificado"}
+              </Text>
+            </Text>
+          </View>
         </View>
-      ) : (
-        <Text style={styles.label}>
-          No hay información del equipo disponible.
-        </Text>
       )}
 
       {/* Pie de página */}
