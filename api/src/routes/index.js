@@ -25,6 +25,8 @@ const {
   createReclamo,
   buscarReclamo,
   updateDerivado,
+  obtenerCantidadReclamos,
+  generarExcel,
 } = require("../controllers/Reclamos");
 
 const { getMarca, getModelo } = require("../controllers/Equipo");
@@ -49,7 +51,9 @@ router.get("/usuarios/detail/:idUsuario", check.auth, obtenerDetalleUsuario);
 router.get("/usuarios/all", check.auth, getAllUsers);
 router.put("/usuarios/recoverpass", resetPassword);
 router.post("/reclamos/create", createReclamo);
+router.post("/reclamos/excel", generarExcel);
 router.post("/reclamos/buscar", buscarReclamo);
+router.get("/reclamos/count", obtenerCantidadReclamos);
 router.put("/reclamos/edit", updateDerivado);
 router.get("/clientes/:cuit", getClienteByCuit);
 

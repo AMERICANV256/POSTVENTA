@@ -7,6 +7,8 @@ const {
   Modelo,
   Estado,
 } = require("../db.js");
+const { conn } = require("../db.js");
+const ExcelJS = require("exceljs");
 
 const createReclamo = async (req, res) => {
   try {
@@ -182,6 +184,12 @@ const updateDerivado = async (req, res) => {
   try {
     const updates = Array.isArray(req.body) ? req.body : [req.body];
 
+    if (updates.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No se recibieron datos para actualizar" });
+    }
+
     for (const { id, derivadoId, estadoId } of updates) {
       if (!id) {
         return res
@@ -204,9 +212,7 @@ const updateDerivado = async (req, res) => {
       if (Object.keys(updateData).length > 0) {
         await reclamo.update(updateData);
         console.log(
-          `Reclamo ${id} actualizado con derivadoId ${
-            derivadoId || reclamo.derivadoId
-          } y estadoId ${estadoId || reclamo.estadoId}`
+          `Reclamo ${id} actualizado con derivadoId ${updateData.derivadoId || reclamo.derivadoId} y estadoId ${updateData.estadoId || reclamo.estadoId}`
         );
       } else {
         console.log(`No se actualizaron datos para el reclamo ${id}`);
@@ -224,8 +230,133 @@ const updateDerivado = async (req, res) => {
   }
 };
 
+const obtenerCantidadReclamos = async (req, res) => {
+  try {
+    // Contar reclamos por estado con el nombre del estado
+    const reclamosPorEstado = await Reclamos.findAll({
+      attributes: [
+        [conn.col("Estado.nombre"), "estadoNombre"],
+        [conn.fn("COUNT", conn.col("Reclamos.id")), "cantidad"],
+      ],
+      include: [
+        {
+          model: Estado,
+          attributes: [],
+        },
+      ],
+      group: ["Estado.nombre"],
+      raw: true,
+    });
+
+    // Contar reclamos por derivado con el nombre del derivado
+    const reclamosPorDerivado = await Reclamos.findAll({
+      attributes: [
+        [conn.col("Derivado.nombre"), "derivadoNombre"],
+        [conn.fn("COUNT", conn.col("Reclamos.id")), "cantidad"],
+      ],
+      include: [
+        {
+          model: Derivados,
+          attributes: [],
+        },
+      ],
+      group: ["Derivado.nombre"],
+      raw: true,
+    });
+
+    return res.status(200).json({
+      reclamosPorEstado,
+      reclamosPorDerivado,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Error al obtener las cantidades", error });
+  }
+};
+
+const generarExcel = async (req, res) => {
+  try {
+    const resultados = await Reclamos.findAll({
+      include: [
+        {
+          model: ClientesReclamantes,
+          attributes: ["nombre", "apellido"],
+        },
+        {
+          model: Derivados,
+          attributes: ["nombre"],
+        },
+        {
+          model: Estado,
+          attributes: ["nombre"],
+        },
+        {
+          model: Equipo,
+          include: [
+            {
+              model: Marca,
+              attributes: ["nombre"],
+            },
+            {
+              model: Modelo,
+              attributes: ["nombre"],
+            },
+          ],
+        },
+      ],
+      order: [["id", "DESC"]],
+    });
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Reclamos");
+
+    worksheet.columns = [
+      { header: "ID Reclamo", key: "id", width: 15 },
+      { header: "Nombre Cliente", key: "clienteNombre", width: 25 },
+      { header: "Apellido Cliente", key: "clienteApellido", width: 25 },
+      { header: "Estado", key: "estado", width: 20 },
+      { header: "Derivado", key: "derivado", width: 20 },
+      { header: "Marca", key: "marca", width: 20 },
+      { header: "Modelo", key: "modelo", width: 20 },
+    ];
+
+    resultados.forEach((reclamo) => {
+      worksheet.addRow({
+        id: reclamo.id,
+        clienteNombre: reclamo.ClienteReclamante.nombre,
+        clienteApellido: reclamo.ClienteReclamante.apellido,
+        estado: reclamo.Estado.nombre,
+        derivado: reclamo.Derivados ? reclamo.Derivados.nombre : "No asignado",
+        marca: reclamo.Equipo ? reclamo.Equipo.Marca.nombre : "No asignado",
+        modelo: reclamo.Equipo ? reclamo.Equipo.Modelo.nombre : "No asignado",
+      });
+    });
+
+    // Configurar la respuesta como un archivo descargable
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=reclamos_${Date.now()}.xlsx`
+    );
+
+    // Escribir el archivo Excel al response
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al generar el archivo Excel" });
+  }
+};
+
 module.exports = {
+  obtenerCantidadReclamos,
   createReclamo,
   buscarReclamo,
   updateDerivado,
+  generarExcel,
 };

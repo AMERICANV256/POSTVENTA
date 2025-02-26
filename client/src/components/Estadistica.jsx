@@ -1,5 +1,6 @@
 import React from "react";
 import { useReclamosCount } from "../hooks/useReclamos";
+import Excel from "./Excel";
 import {
   BarChart,
   Bar,
@@ -96,6 +97,7 @@ export default function Estadistica() {
           ))}
         </div>
       </div>
+      <Excel />
     </div>
   );
 }
