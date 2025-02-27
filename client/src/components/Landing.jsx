@@ -3,6 +3,7 @@ import landing from "../assets/LANDING.png";
 import Login from "./usuario/Login";
 import Home from "./Home";
 import useAuth from "../hooks/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 export default function Landing() {
   const { auth, setAuth } = useAuth();
@@ -13,9 +14,24 @@ export default function Landing() {
     const user = localStorage.getItem("user");
 
     if (token && user) {
-      const userObj = JSON.parse(user);
-      setAuth(userObj);
-      setIsAuthenticated(true);
+      try {
+        const decoded = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        if (decoded.exp > currentTime) {
+          // Token válido
+          setAuth(JSON.parse(user));
+          setIsAuthenticated(true);
+        } else {
+          // Token expirado
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+        setIsAuthenticated(false);
+      }
     } else {
       setIsAuthenticated(false);
     }
