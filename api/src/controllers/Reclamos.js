@@ -34,21 +34,28 @@ const createReclamo = async (req, res) => {
       estado,
     } = req.body;
 
-    // Validación de parámetros
-    if (
-      !nombre ||
-      !apellido ||
-      !documento ||
-      !razonSocial ||
-      !cuit ||
-      !telefono ||
-      !email ||
-      !motivo ||
-      !estado
-    ) {
-      const error = new Error("Faltan parámetros en el cuerpo de la solicitud");
-      error.status = 400;
-      throw error;
+    const requiredParams = [
+      "nombre",
+      "apellido",
+      "documento",
+      "razonSocial",
+      "cuit",
+      "telefono",
+      "email",
+      "motivo",
+      "nombreMarca",
+      "nombreModelo",
+      "hsUso",
+      "falla",
+    ];
+
+    const missingParams = requiredParams.filter((param) => !req.body[param]);
+
+    if (missingParams.length > 0) {
+      return res.status(404).json({
+        error: "Faltan parámetros en el cuerpo de la solicitud",
+        missingParams,
+      });
     }
 
     let cliente = await ClientesReclamantes.findOne({ where: { cuit } });
@@ -169,7 +176,7 @@ const buscarReclamo = async (req, res) => {
 
     if (!resultados) {
       return res.status(404).json({
-        message: "No se encontraron reclamos con los criterios proporcionados.",
+        message: "No se encontraron reclamos con los valores proporcionados.",
       });
     }
 
@@ -186,7 +193,7 @@ const updateDerivado = async (req, res) => {
 
     if (updates.length === 0) {
       return res
-        .status(400)
+        .status(404)
         .json({ message: "No se recibieron datos para actualizar" });
     }
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useReclamo } from "../hooks/useReclamos";
 import ModalTickets from "./ModalTickets";
+import InputMask from "react-input-mask";
 
 export default function MisTickets({ setShowTickets }) {
   const [email, setEmail] = useState("");
@@ -50,14 +51,30 @@ export default function MisTickets({ setShowTickets }) {
 
         <div className="form-group">
           <label htmlFor="cuit">CUIT:</label>
-          <input
-            type="text"
-            id="cuit"
+          <InputMask
+            mask="99-99999999-9"
             value={cuit}
-            onChange={(e) => setCuit(e.target.value)}
-            placeholder="20-12345678-9"
-            className="form-input"
-          />
+            onChange={(e) => {
+              let newValue = e.target.value
+                .replace(/-/g, "")
+                .replace(/[^0-9]/g, "");
+
+              let regex = /^[0-9]{0,11}$/;
+              if (regex.test(newValue)) {
+                setCuit(newValue);
+              }
+            }}
+          >
+            {(inputProps) => (
+              <input
+                {...inputProps}
+                type="text"
+                id="cuit"
+                placeholder="20-12345678-9"
+                className="form-input"
+              />
+            )}
+          </InputMask>
         </div>
 
         <button type="submit" className="search-btn">

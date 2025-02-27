@@ -10,8 +10,11 @@ module.exports = (sequelize) => {
         primaryKey: true,
       },
       nombre: {
-        type: DataTypes.STRING,
-        defaultValue: null,
+        type: DataTypes.STRING(25),
+        allowNull: true,
+        validate: {
+          len: [1, 25],
+        },
       },
     },
     {

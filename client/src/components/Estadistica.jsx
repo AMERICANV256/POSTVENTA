@@ -40,7 +40,7 @@ export default function Estadistica() {
   };
 
   return (
-    <div>
+    <div className="estadisticas-container-full">
       <BackButton />
       <h2 className="titulo">Estadísticas de Reclamos</h2>
       <div className="estadistica-container">

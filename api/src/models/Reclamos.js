@@ -10,12 +10,14 @@ module.exports = (sequelize) => {
         primaryKey: true,
       },
       motivo: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING(500),
         allowNull: false,
         validate: {
           notEmpty: true,
+          len: [1, 500],
         },
       },
+
       derivadoId: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -31,10 +33,6 @@ module.exports = (sequelize) => {
           model: "Estados",
           key: "id",
         },
-      },
-      pdf: {
-        type: DataTypes.TEXT,
-        allowNull: true,
       },
       clienteReclamanteId: {
         type: DataTypes.INTEGER,

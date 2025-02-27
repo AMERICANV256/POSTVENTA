@@ -237,6 +237,23 @@ button:focus-visible {
   background-color: #e6b800;
 }
 
+@media (max-width: 770px) {
+  .buttonMyTickets {
+    top: 70px; 
+  }
+
+  .buttonMyTicketsestadistica {
+    top: 110px; 
+  }
+
+  .buttonMyTickets button,
+  .buttonMyTicketsestadistica button {
+    padding: 8px 16px; 
+    font-size: 12px; 
+    width: 8.5rem; 
+  }
+}
+
 .topBar {
   display: flex;
   justify-content: space-between;
@@ -256,6 +273,12 @@ button:focus-visible {
 
 .serviceTitle {
   font-size: 1.5rem;
+}
+
+@media (max-width: 450px) {
+  .serviceTitle {
+    font-size: 1rem;
+  }
 }
 
 .logoutButton {
@@ -517,10 +540,6 @@ h2 span {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100vw; 
   max-width: 100%; 
   margin: 0 auto;
@@ -601,7 +620,7 @@ h2 span {
   justify-content: center;
   transition: background-color 0.3s ease;
   position: absolute;
-  right: 70px;
+  right: 50px;
   top: 40px;
 }
 
@@ -609,3 +628,18 @@ h2 span {
   background-color: #e6b106;
 }
 
+@media (max-width: 750px) {
+  .back-button {
+    right: 35px; 
+    padding: 8px 16px; 
+    font-size: 14px; 
+    top: 20px;
+  }
+}
+
+.estadisticas-container-full {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

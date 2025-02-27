@@ -30,8 +30,11 @@ module.exports = (sequelize) => {
         allowNull: true,
       },
       falla: {
-        type: DataTypes.STRING,
-        defaultValue: null,
+        type: DataTypes.STRING(150),
+        allowNull: true,
+        validate: {
+          len: [1, 150],
+        },
       },
     },
     {

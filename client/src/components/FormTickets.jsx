@@ -232,7 +232,7 @@ export default function FormTickets() {
               type="text"
               name="apellido"
               value={formData.apellido}
-              max={100}
+              maxLength={100}
               onChange={handleChange}
               required
             />
@@ -243,7 +243,7 @@ export default function FormTickets() {
               type="text"
               name="razonSocial"
               value={formData.razonSocial}
-              max={100}
+              maxLength={100}
               onChange={handleChange}
             />
           </label>
@@ -253,7 +253,7 @@ export default function FormTickets() {
               type="text"
               name="documento"
               value={formData.documento}
-              max={10}
+              maxLength={10}
               onChange={handleChange}
               required
             />
@@ -263,7 +263,7 @@ export default function FormTickets() {
             <input
               type="text"
               name="direccion"
-              max={100}
+              maxLength={100}
               value={formData.direccion}
               onChange={handleChange}
             />
@@ -273,15 +273,16 @@ export default function FormTickets() {
             <input
               type="text"
               name="telefono"
-              max={50}
+              maxLength={50}
               value={formData.telefono}
               onChange={handleChange}
             />
           </label>
           <label>
-            Teléfono alternativo:<span className="obligatorio">*</span>
+            Teléfono alternativo:
             <input
               type="text"
+              maxLength={50}
               name="telefono2"
               value={formData.telefono2}
               onChange={handleChange}
@@ -292,7 +293,7 @@ export default function FormTickets() {
             <input
               type="email"
               name="email"
-              max={100}
+              maxLength={100}
               value={formData.email}
               onChange={handleChange}
               required
@@ -303,7 +304,14 @@ export default function FormTickets() {
         <div className="marca-modelo-container">
           <h2>Selecciona Marca y Modelo del equipo</h2>
           <br />
+
           <div className="formGrid">
+            <label>
+              Marca:<span className="obligatorio">*</span>
+            </label>
+            <label>
+              Modelo:<span className="obligatorio">*</span>
+            </label>
             <CreatableSelect
               isClearable
               isLoading={loadingMarcas}
@@ -317,6 +325,7 @@ export default function FormTickets() {
               isClearable
               isLoading={loadingModelos}
               options={modeloOptions}
+              maxLength={100}
               value={selectedModelo}
               onChange={handleModeloChange}
               placeholder="Selecciona o crea un modelo"
@@ -327,6 +336,7 @@ export default function FormTickets() {
               <input
                 type="text"
                 name="hsUso"
+                maxLength={50}
                 value={formData.hsUso}
                 onChange={handleChange}
                 required
@@ -337,6 +347,7 @@ export default function FormTickets() {
               <input
                 type="text"
                 name="falla"
+                maxLength={100}
                 value={formData.falla}
                 onChange={handleChange}
                 required
@@ -376,6 +387,7 @@ export default function FormTickets() {
               Motivo de contacto: <span className="obligatorio">*</span>
               <textarea
                 name="motivo"
+                maxLength={500}
                 value={formData.motivo}
                 onChange={handleChange}
                 rows="4"
