@@ -15,12 +15,18 @@ import {
   Cell,
 } from "recharts";
 import BackButton from "../UI/BackButton";
+import Spinner from "../UI/Spinner";
 
 export default function Estadistica() {
   const { data: count, isLoading: loadingCount } = useReclamosCount();
 
-  if (loadingCount) return <div>Cargando estadísticas...</div>;
-  if (!count) return <div>No se encontraron datos</div>;
+  if (loadingCount)
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
+  if (!count) return <div>Aún no se cargaron reclamos</div>;
 
   const reclamosPorEstadoData = count.reclamosPorEstado.map((item) => ({
     name: item.estadoNombre,
