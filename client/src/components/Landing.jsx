@@ -42,7 +42,7 @@ export default function Landing() {
   ) : (
     <div className="landingContainer">
       <div className="topBar">
-        <span className="serviceTitle">Servicio de Postventa</span>
+        <span className="serviceTitle2">Servicio de Postventa</span>
       </div>
       <div className="Login">
         <Login />

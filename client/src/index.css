@@ -291,6 +291,10 @@ button:focus-visible {
   }
 }
 
+.serviceTitle2 {
+  font-size: 1.5rem;
+}
+
 .logoutButton {
   background-color: #ffcc00;
   border: none;
