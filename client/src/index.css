@@ -69,10 +69,12 @@ button:focus-visible {
 
 .landingContainer {
   position: relative;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   overflow: hidden;
+  margin-left: -50px;
 }
+
 
 .landingImg {
   width: 100%;
@@ -95,17 +97,18 @@ button:focus-visible {
   );
   pointer-events: none;
   z-index: 1;
+ 
 }
 
 .Login {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -30%);
+  transform: translate(-48%, -40%);
   z-index: 999;
-  width: 90%; /* Se adapta mejor en pantallas pequeñas */
-  max-width: 400px; /* Límite máximo en pantallas grandes */
-  min-width: 280px; /* Evita que se haga demasiado pequeña */
+  width: 90%; 
+  max-width: 400px; 
+  min-width: 280px; 
   padding: 20px;
   background: #f9f9f9;
   border-radius: 10px;
@@ -203,17 +206,11 @@ button:focus-visible {
   padding-top: 60px;
 }
 
-.buttonMyTickets {
-  position: absolute;
-  top: 80px;
-  left: 20px;
+.buttonstickets {
+  display: flex;
+  justify-content: space-between;
 }
 
-.buttonMyTicketsestadistica {
-  position: absolute;
-  top: 130px;
-  left: 20px;
-}
 
 .buttonMyTicketsestadistica button {
   background-color: #ffcc00;
@@ -470,7 +467,7 @@ h2 span {
 }
 
 .create-button-reclamo {
-  width: 20%;
+  width: 25%;
   margin: auto;
   margin-top: 1rem;
 }

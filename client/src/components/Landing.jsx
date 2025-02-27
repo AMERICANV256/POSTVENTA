@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import landing from "../assets/LANDING.png";
+import landing from "../assets/postventa.png";
 import Login from "./usuario/Login";
 import Home from "./Home";
 import useAuth from "../hooks/useAuth";
@@ -41,6 +41,9 @@ export default function Landing() {
     <Home />
   ) : (
     <div className="landingContainer">
+      <div className="topBar">
+        <span className="serviceTitle">Servicio de Postventa</span>
+      </div>
       <div className="Login">
         <Login />
       </div>

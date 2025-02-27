@@ -22,17 +22,18 @@ export default function Home() {
           Cerrar Sesión
         </button>
       </div>
-      <div className="buttonMyTickets">
-        <button onClick={() => setShowTickets(!showTickets)}>
-          {showTickets ? "Ocultar Reclamos" : "Buscar Reclamos"}
-        </button>
+      <div className="buttonstickets">
+        <div className="buttonMyTickets">
+          <button onClick={() => setShowTickets(!showTickets)}>
+            {showTickets ? "Ocultar Reclamos" : "Buscar Reclamos"}
+          </button>
+        </div>
+        <div className="buttonMyTicketsestadistica">
+          <button onClick={() => navigation("/estadistica")}>
+            Ver estadística
+          </button>
+        </div>
       </div>
-      <div className="buttonMyTicketsestadistica">
-        <button onClick={() => navigation("/estadistica")}>
-          Ver estadística
-        </button>
-      </div>
-
       {showTickets && (
         <div className="ticketsPage">
           <MisTickets setShowTickets={setShowTickets} />
