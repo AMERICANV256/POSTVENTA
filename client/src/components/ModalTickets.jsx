@@ -32,8 +32,8 @@ export default function ModalTickets({ data, setShowTickets }) {
       setFormData(
         data.data.Reclamos.map((reclamo) => ({
           id: reclamo.id,
-          estado: reclamo.Estado?.id || null,
-          derivado: reclamo.Derivado?.id || null,
+          estado: reclamo.estadoId || null,
+          derivado: reclamo.derivadoId || null,
         }))
       );
     }
