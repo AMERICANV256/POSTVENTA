@@ -86,6 +86,7 @@ export default function ModalTickets({ data, setShowTickets }) {
     }));
 
     editDerivado(payload);
+    setShowTickets(false);
   };
 
   return (
