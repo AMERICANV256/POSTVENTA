@@ -103,7 +103,9 @@ button:focus-visible {
   left: 50%;
   transform: translate(-50%, -30%);
   z-index: 999;
-  width: 30%;
+  width: 90%; /* Se adapta mejor en pantallas pequeñas */
+  max-width: 400px; /* Límite máximo en pantallas grandes */
+  min-width: 280px; /* Evita que se haga demasiado pequeña */
   padding: 20px;
   background: #f9f9f9;
   border-radius: 10px;
@@ -112,6 +114,15 @@ button:focus-visible {
   font-family: "Merri", sans-serif;
   text-align: center;
 }
+
+/* Ajustes específicos para pantallas menores a 600px */
+@media (max-width: 600px) {
+  .Login {
+    width: 95%;
+    padding: 15px;
+  }
+}
+
 
 .Login h1 {
   font-size: 1.8rem;
