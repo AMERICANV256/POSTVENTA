@@ -104,7 +104,7 @@ button:focus-visible {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -70%);
+  transform: translate(-50%, -50%);
   z-index: 999;
   width: 85%; 
   max-width: 380px; 
@@ -123,7 +123,7 @@ button:focus-visible {
   .Login {
     width: 80%;
     max-width: 320px; 
-    left: 52%;
+   
   }
 }
 
