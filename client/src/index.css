@@ -117,7 +117,7 @@ button:focus-visible {
 /* Ajustes específicos para pantallas menores a 600px */
 @media (max-width: 600px) {
   .Login {
-    width: 60%;
+    width: 70%;
     max-width: 320px; 
     top: 60%;
    
@@ -291,7 +291,8 @@ button:focus-visible {
 }
 
 .serviceTitle2 {
-  font-size: 1.5rem;
+  font-size: 2rem;
+  margin-right: 2rem;
 }
 
 .logoutButton {
@@ -504,9 +505,19 @@ h2 span {
 }
 
 .derechos {
-  color: #ffcc00; 
+  color: #ffcc00;
   font-size: 14px;
   font-weight: 600;
+  margin-left: 20px; /* Espacio entre los spans */
+}
+
+/* Cambiar tamaño y margen cuando la pantalla sea menor a 850px */
+@media (max-width: 850px) {
+  .derechos {
+    font-size: 10px;
+    margin-left: 10px; 
+ 
+  }
 }
 
 

@@ -44,7 +44,7 @@ export default function Landing() {
   ) : (
     <div className="landingContainer">
       <div className="topBar">
-        <span className="serviceTitle2">Servicio de Postventa</span>
+        <span className="serviceTitle2">Postventa</span>
         <span className="derechos">
           Copyright © {currentYear} | American Vial Todos los derechos
           reservados
