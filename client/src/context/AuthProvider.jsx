@@ -1,31 +1,39 @@
 import React, { createContext, useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode"; // Necesitarás instalar esta librería
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({});
+  const [auth, setAuth] = useState(null);
 
   useEffect(() => {
     authUser();
   }, []);
 
   const authUser = () => {
-    //sacar datos del usuario identificado en localstorage
-
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
 
-    //comprobar si tengo el token y el user
-
     if (!token || !user) {
-      return false;
+      setAuth(null);
+      return;
     }
 
-    //transformar los datos a un objeto javascript
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Math.floor(Date.now() / 1000);
 
-    const userObj = JSON.parse(user);
-
-    setAuth(userObj);
+      if (decoded.exp > currentTime) {
+        setAuth(JSON.parse(user));
+      } else {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        setAuth(null);
+      }
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+      setAuth(null);
+    }
   };
 
   return (
