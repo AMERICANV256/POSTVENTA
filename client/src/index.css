@@ -209,7 +209,8 @@ button:focus-visible {
 .buttonstickets {
   display: flex;
   justify-content: space-between;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
+  padding: 1rem;
 }
 
 
@@ -680,7 +681,7 @@ h2 span {
   transition: background-color 0.3s ease;
   position: absolute;
   right: 50px;
-  top: 40px;
+  top: 20px;
 }
 
 .back-button:hover {
