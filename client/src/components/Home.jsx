@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import MisTickets from "./MisTickets";
 import FormTickets from "./FormTickets";
 import { useNavigate } from "react-router-dom";
+import Footer from "../pages/Footer";
 
 export default function Home() {
   const navigation = useNavigate();
@@ -45,6 +46,9 @@ export default function Home() {
           <FormTickets />
         </div>
       )}
+      <div>
+        <Footer />
+      </div>
     </div>
   );
 }

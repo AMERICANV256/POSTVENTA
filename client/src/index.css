@@ -68,19 +68,17 @@ button:focus-visible {
 }
 
 .landingContainer {
-  position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
-  overflow: hidden;
 }
 
 .landingImg {
- 
   top: 0;
   left: 0;
   width: 100vw; 
   height: 100vh;
   object-fit: cover;
+  
 }
 
 .landingContainer::after {
@@ -88,8 +86,6 @@ button:focus-visible {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0) 70%,
@@ -121,8 +117,9 @@ button:focus-visible {
 /* Ajustes específicos para pantallas menores a 600px */
 @media (max-width: 600px) {
   .Login {
-    width: 80%;
+    width: 60%;
     max-width: 320px; 
+    top: 60%;
    
   }
 }
@@ -204,13 +201,15 @@ button:focus-visible {
   font-family: "Arial", sans-serif;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh; 
   padding-top: 60px;
 }
+
 
 .buttonstickets {
   display: flex;
   justify-content: space-between;
+  margin-top: 1.5rem;
 }
 
 
@@ -316,9 +315,8 @@ button:focus-visible {
 }
 
 .clientFormContainer {
-  max-width: 800px;
+  max-width: 800px; 
   margin: 50px auto;
-
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
@@ -477,6 +475,42 @@ h2 span {
   margin: auto;
   margin-top: 1rem;
 }
+
+.create-button-reclamo button:disabled {
+  background-color: #ccc; 
+  color: #666; 
+  cursor: not-allowed; 
+  opacity: 0.6; 
+  border: 1px solid #999; 
+}
+
+.copy {
+  width: 100%; 
+  background: linear-gradient(135deg, #222, #444); 
+  color: #ffcc00; 
+  margin-top: 4rem;
+  margin-left: auto;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  align-items: center;
+  text-align: center;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2); 
+  border-top: 2px solid #ffcc00; 
+}
+
+.derechos {
+  color: #ffcc00; 
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+
 
 .modal-container {
   margin-top: 1rem;

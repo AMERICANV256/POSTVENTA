@@ -197,6 +197,32 @@ export default function FormTickets() {
     });
   };
 
+  // HABILITAR BOTON CUANDO LOS DATOS OBLIGATORIOS TENGAN DATOS //
+
+  const requiredFields = [
+    "cuit",
+    "nombre",
+    "apellido",
+    "documento",
+    "razonSocial",
+    "telefono",
+    "email",
+    "motivo",
+    "hsUso",
+    "falla",
+  ];
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
+  useEffect(() => {
+    // Verificar si todos los campos obligatorios tienen valores
+    const allFieldsFilled = requiredFields.every(
+      (field) => formData[field]?.trim() !== ""
+    );
+
+    setIsButtonDisabled(!allFieldsFilled);
+  }, [formData]);
+
   return (
     <div className="clientFormContainer">
       <h2>Ingresar Reclamo</h2>
@@ -396,7 +422,9 @@ export default function FormTickets() {
           </div>
         </div>
         <div className="create-button-reclamo">
-          <button type="submit">Enviar</button>
+          <button type="submit" disabled={isButtonDisabled}>
+            Enviar
+          </button>
         </div>
       </form>
     </div>

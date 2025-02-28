@@ -16,6 +16,7 @@ import {
 } from "recharts";
 import BackButton from "../UI/BackButton";
 import Spinner from "../UI/Spinner";
+import Footer from "../pages/Footer";
 
 export default function Estadistica() {
   const { data: count, isLoading: loadingCount } = useReclamosCount();
@@ -113,6 +114,7 @@ export default function Estadistica() {
         </div>
       </div>
       <Excel />
+      <Footer />
     </div>
   );
 }

@@ -4,8 +4,10 @@ import Login from "./usuario/Login";
 import Home from "./Home";
 import useAuth from "../hooks/useAuth";
 import { jwtDecode } from "jwt-decode";
+import Footer from "../pages/Footer";
 
 export default function Landing() {
+  const currentYear = new Date().getFullYear();
   const { auth, setAuth } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -43,10 +45,15 @@ export default function Landing() {
     <div className="landingContainer">
       <div className="topBar">
         <span className="serviceTitle2">Servicio de Postventa</span>
+        <span className="derechos">
+          Copyright © {currentYear} | American Vial Todos los derechos
+          reservados
+        </span>
       </div>
       <div className="Login">
         <Login />
       </div>
+
       <img src={landing} className="landingImg" alt="Landing" />
     </div>
   );
