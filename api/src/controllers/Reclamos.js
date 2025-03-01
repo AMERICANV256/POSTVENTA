@@ -241,7 +241,7 @@ const updateDerivado = async (req, res) => {
 
 const obtenerCantidadReclamos = async (req, res) => {
   try {
-    // Contar reclamos por estado con el nombre del estado
+    // Contar reclamos por estado con el nombre del estado, excluyendo NULL
     const reclamosPorEstado = await Reclamos.findAll({
       attributes: [
         [conn.col("Estado.nombre"), "estadoNombre"],
@@ -251,13 +251,14 @@ const obtenerCantidadReclamos = async (req, res) => {
         {
           model: Estado,
           attributes: [],
+          required: true, // Esto hace que solo se incluyan los reclamos con estado asignado
         },
       ],
       group: ["Estado.nombre"],
       raw: true,
     });
 
-    // Contar reclamos por derivado con el nombre del derivado
+    // Contar reclamos por derivado con el nombre del derivado, excluyendo NULL
     const reclamosPorDerivado = await Reclamos.findAll({
       attributes: [
         [conn.col("Derivado.nombre"), "derivadoNombre"],
@@ -267,6 +268,7 @@ const obtenerCantidadReclamos = async (req, res) => {
         {
           model: Derivados,
           attributes: [],
+          required: true, // Esto excluye los reclamos sin derivado asignado
         },
       ],
       group: ["Derivado.nombre"],
@@ -318,32 +320,50 @@ const generarExcel = async (req, res) => {
       order: [["id", "DESC"]],
     });
 
-    const ExcelJS = require("exceljs");
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Reclamos");
 
+    // Definir columnas
     worksheet.columns = [
-      { header: "ID Reclamo", key: "id", width: 15 },
-      { header: "Nombre Cliente", key: "clienteNombre", width: 25 },
-      { header: "Apellido Cliente", key: "clienteApellido", width: 25 },
+      { header: "Nro Reclamo", key: "id", width: 15 },
+      { header: "Nombre", key: "clienteNombre", width: 25 },
+      { header: "Apellido", key: "clienteApellido", width: 25 },
       { header: "Estado", key: "estado", width: 20 },
       { header: "Derivado", key: "derivado", width: 20 },
       { header: "Marca", key: "marca", width: 20 },
       { header: "Modelo", key: "modelo", width: 20 },
     ];
 
+    // Agregar datos a la tabla
     resultados.forEach((reclamo) => {
       worksheet.addRow({
         id: reclamo.id,
         clienteNombre: reclamo.ClientesReclamante?.nombre || "No asignado",
         clienteApellido: reclamo.ClientesReclamante?.apellido || "No asignado",
         estado: reclamo.Estado?.nombre || "No asignado",
-        derivado: reclamo.Derivados?.nombre || "No asignado",
+        derivado: reclamo.Derivado?.nombre || "No asignado",
         marca: reclamo.Equipo?.Marca?.nombre || "No asignado",
         modelo: reclamo.Equipo?.Modelo?.nombre || "No asignado",
       });
     });
 
+    // Obtener la última fila con datos
+    const ultimaFila = worksheet.rowCount + 2;
+
+    // Agregar texto "Reclamos al día de la fecha (dd/mm/yyyy)"
+    const fechaActual = new Date().toLocaleDateString("es-ES");
+    worksheet.getCell(
+      `A${ultimaFila - 1}`
+    ).value = `Reclamos al día de la fecha (${fechaActual})`;
+    worksheet.getCell(`A${ultimaFila - 1}`).font = { bold: true };
+
+    // Agregar texto de copyright en la última fila
+    worksheet.getCell(
+      `A${ultimaFila}`
+    ).value = `Copyright © ${new Date().getFullYear()} | American Vial Todos los derechos reservados`;
+    worksheet.getCell(`A${ultimaFila}`).font = { italic: true };
+
+    // Convertir el archivo a buffer
     const buffer = await workbook.xlsx.writeBuffer();
 
     res.setHeader(
