@@ -323,41 +323,51 @@ const generarExcel = async (req, res) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Reclamos");
 
-    // Definir columnas
-    worksheet.columns = [
-      { header: "Nro Reclamo", key: "id", width: 15 },
-      { header: "Nombre", key: "clienteNombre", width: 25 },
-      { header: "Apellido", key: "clienteApellido", width: 25 },
-      { header: "Estado", key: "estado", width: 20 },
-      { header: "Derivado", key: "derivado", width: 20 },
-      { header: "Marca", key: "marca", width: 20 },
-      { header: "Modelo", key: "modelo", width: 20 },
+    // Definir las columnas de la tabla
+    const columnas = [
+      { name: "Nro Reclamo", key: "id", width: 15 },
+      { name: "Nombre", key: "clienteNombre", width: 25 },
+      { name: "Apellido", key: "clienteApellido", width: 25 },
+      { name: "Estado", key: "estado", width: 20 },
+      { name: "Derivado", key: "derivado", width: 20 },
+      { name: "Marca", key: "marca", width: 20 },
+      { name: "Modelo", key: "modelo", width: 20 },
     ];
 
-    // Agregar datos a la tabla
-    resultados.forEach((reclamo) => {
-      worksheet.addRow({
-        id: reclamo.id,
-        clienteNombre: reclamo.ClientesReclamante?.nombre || "No asignado",
-        clienteApellido: reclamo.ClientesReclamante?.apellido || "No asignado",
-        estado: reclamo.Estado?.nombre || "No asignado",
-        derivado: reclamo.Derivado?.nombre || "No asignado",
-        marca: reclamo.Equipo?.Marca?.nombre || "No asignado",
-        modelo: reclamo.Equipo?.Modelo?.nombre || "No asignado",
-      });
+    // Crear tabla dentro del Excel
+    worksheet.addTable({
+      name: "ReclamosTable",
+      ref: "A1", // Ubicación inicial
+      headerRow: true,
+      columns: columnas.map((col) => ({ name: col.name })),
+      rows: resultados.map((reclamo) => [
+        reclamo.id,
+        reclamo.ClientesReclamante?.nombre || "No asignado",
+        reclamo.ClientesReclamante?.apellido || "No asignado",
+        reclamo.Estado?.nombre || "No asignado",
+        reclamo.Derivado?.nombre || "No asignado",
+        reclamo.Equipo?.Marca?.nombre || "No asignado",
+        reclamo.Equipo?.Modelo?.nombre || "No asignado",
+      ]),
+    });
+
+    // Aplicar negrita manualmente a los títulos de las columnas
+    const headerRow = worksheet.getRow(1);
+    headerRow.eachCell((cell) => {
+      cell.font = { bold: true };
     });
 
     // Obtener la última fila con datos
     const ultimaFila = worksheet.rowCount + 2;
 
-    // Agregar texto "Reclamos al día de la fecha (dd/mm/yyyy)"
+    // Agregar "Reclamos al día de la fecha"
     const fechaActual = new Date().toLocaleDateString("es-ES");
     worksheet.getCell(
       `A${ultimaFila - 1}`
     ).value = `Reclamos al día de la fecha (${fechaActual})`;
     worksheet.getCell(`A${ultimaFila - 1}`).font = { bold: true };
 
-    // Agregar texto de copyright en la última fila
+    // Agregar Copyright en la última fila
     worksheet.getCell(
       `A${ultimaFila}`
     ).value = `Copyright © ${new Date().getFullYear()} | American Vial Todos los derechos reservados`;
