@@ -328,52 +328,59 @@ const generarExcel = async (req, res) => {
       { name: "Nro Reclamo", key: "id", width: 15 },
       { name: "Nombre", key: "clienteNombre", width: 25 },
       { name: "Apellido", key: "clienteApellido", width: 25 },
-      { name: "Estado", key: "estado", width: 20 },
-      { name: "Derivado", key: "derivado", width: 20 },
       { name: "Marca", key: "marca", width: 20 },
       { name: "Modelo", key: "modelo", width: 20 },
+      { name: "Motivo del reclamo", key: "motivo", width: 50 },
+      { name: "Estado", key: "estado", width: 20 },
+      { name: "Derivado", key: "derivado", width: 20 },
     ];
 
-    // Crear tabla dentro del Excel
     worksheet.addTable({
       name: "ReclamosTable",
-      ref: "A1", // Ubicación inicial
+      ref: "A1",
       headerRow: true,
       columns: columnas.map((col) => ({ name: col.name })),
       rows: resultados.map((reclamo) => [
         reclamo.id,
         reclamo.ClientesReclamante?.nombre || "No asignado",
         reclamo.ClientesReclamante?.apellido || "No asignado",
-        reclamo.Estado?.nombre || "No asignado",
-        reclamo.Derivado?.nombre || "No asignado",
         reclamo.Equipo?.Marca?.nombre || "No asignado",
         reclamo.Equipo?.Modelo?.nombre || "No asignado",
+        reclamo.motivo || "Sin especificar",
+        reclamo.Estado?.nombre || "No asignado",
+        reclamo.Derivado?.nombre || "No asignado",
       ]),
     });
 
-    // Aplicar negrita manualmente a los títulos de las columnas
     const headerRow = worksheet.getRow(1);
     headerRow.eachCell((cell) => {
       cell.font = { bold: true };
     });
 
-    // Obtener la última fila con datos
     const ultimaFila = worksheet.rowCount + 2;
 
-    // Agregar "Reclamos al día de la fecha"
+    worksheet.addRow([]);
+    worksheet.addRow([]);
+
     const fechaActual = new Date().toLocaleDateString("es-ES");
-    worksheet.getCell(
-      `A${ultimaFila - 1}`
-    ).value = `Reclamos al día de la fecha (${fechaActual})`;
-    worksheet.getCell(`A${ultimaFila - 1}`).font = { bold: true };
+    const filaFecha = worksheet.addRow([
+      `Reclamos al día de la fecha (${fechaActual})`,
+    ]);
+    filaFecha.getCell(1).font = { bold: true };
 
-    // Agregar Copyright en la última fila
-    worksheet.getCell(
-      `A${ultimaFila}`
-    ).value = `Copyright © ${new Date().getFullYear()} | American Vial Todos los derechos reservados`;
-    worksheet.getCell(`A${ultimaFila}`).font = { italic: true };
+    worksheet.addRow([]);
 
-    // Convertir el archivo a buffer
+    const filaCopyright = worksheet.addRow([
+      `Copyright © ${new Date().getFullYear()} | American Vial Todos los derechos reservados`,
+    ]);
+    filaCopyright.getCell(1).font = { italic: true };
+
+    worksheet.mergeCells(`A${filaFecha.number}:G${filaFecha.number}`);
+    worksheet.mergeCells(`A${filaCopyright.number}:G${filaCopyright.number}`);
+
+    filaFecha.getCell(1).alignment = { horizontal: "center" };
+    filaCopyright.getCell(1).alignment = { horizontal: "center" };
+
     const buffer = await workbook.xlsx.writeBuffer();
 
     res.setHeader(
