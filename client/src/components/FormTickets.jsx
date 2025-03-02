@@ -242,6 +242,18 @@ export default function FormTickets() {
             </InputMask>
           </label>
           <label>
+            Documento:<span className="obligatorio">*</span>
+            <input
+              type="text"
+              name="documento"
+              value={formData.documento}
+              maxLength={10}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
+          <label>
             Nombre: <span className="obligatorio">*</span>
             <input
               type="text"
@@ -264,33 +276,23 @@ export default function FormTickets() {
             />
           </label>
           <label>
+            Email:<span className="obligatorio">*</span>
+            <input
+              type="email"
+              name="email"
+              maxLength={100}
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </label>
+          <label>
             Razón Social:<span className="obligatorio">*</span>
             <input
               type="text"
               name="razonSocial"
               value={formData.razonSocial}
               maxLength={100}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Documento:<span className="obligatorio">*</span>
-            <input
-              type="text"
-              name="documento"
-              value={formData.documento}
-              maxLength={10}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Dirección:
-            <input
-              type="text"
-              name="direccion"
-              maxLength={100}
-              value={formData.direccion}
               onChange={handleChange}
             />
           </label>
@@ -305,6 +307,17 @@ export default function FormTickets() {
             />
           </label>
           <label>
+            Dirección:
+            <input
+              type="text"
+              name="direccion"
+              maxLength={100}
+              value={formData.direccion}
+              onChange={handleChange}
+            />
+          </label>
+
+          <label>
             Teléfono alternativo:
             <input
               type="text"
@@ -312,17 +325,6 @@ export default function FormTickets() {
               name="telefono2"
               value={formData.telefono2}
               onChange={handleChange}
-            />
-          </label>
-          <label>
-            Email:<span className="obligatorio">*</span>
-            <input
-              type="email"
-              name="email"
-              maxLength={100}
-              value={formData.email}
-              onChange={handleChange}
-              required
             />
           </label>
         </div>
