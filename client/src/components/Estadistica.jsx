@@ -21,8 +21,6 @@ import Footer from "../pages/Footer";
 export default function Estadistica() {
   const { data: count, isLoading: loadingCount } = useReclamosCount();
 
-  console.log(count);
-
   if (loadingCount)
     return (
       <div>
